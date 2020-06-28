@@ -80,3 +80,7 @@ exports.isInThePast = function (date) {
     }
     return date < Date.now();
 };
+
+exports.logSqlError = function (err) {
+    console.error(`An error occurred when executing: \n${err.sql} \nERROR: ${err.sqlMessage}`);
+};
