@@ -48,7 +48,6 @@ exports.create = async function (req, res) {
             .send()
     }
 };
-
 exports.login = async function (req, res) {
     let message = '';
     if (!isValidEmail(req.body.email)) {
@@ -82,4 +81,13 @@ exports.login = async function (req, res) {
     }
 
 };
-
+exports.logout = async function (req, res) {
+    try {
+        await Users.logout(req.authenticatedUserId);
+        res.status(200).send()
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};

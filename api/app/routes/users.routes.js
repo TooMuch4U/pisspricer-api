@@ -10,4 +10,7 @@ module.exports = function(app) {
     app.route(baseUrl + '/login')
         .post(users.login);
 
+    app.route(baseUrl + '/logout')
+        .post(authenticate.loginRequired, users.logout);
+
 };

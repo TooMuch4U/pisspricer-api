@@ -40,3 +40,13 @@ exports.login = async function (userId) {
         throw(err)
     }
 };
+exports.logout = async function (userId) {
+    const sql = "UPDATE user SET auth_token = null WHERE user_id = ?";
+    try {
+        await db.getPool().query(sql, [userId]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};
