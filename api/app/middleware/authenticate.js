@@ -2,7 +2,7 @@ const db = require('../../config/db');
 const tools = require('../services/tools');
 
 async function findUserIdByToken(token) {
-    const findSQL = 'SELECT user_id FROM User WHERE auth_token = ?';
+    const findSQL = 'SELECT * FROM User WHERE auth_token = ?';
 
     if (!token) {
         // No token provided, hence can't fetch matching user
@@ -52,6 +52,28 @@ exports.setAuthenticatedUser = async function (req, res, next) {
             req.authenticatedUserId = result.userId.toString();
         }
         next();
+    } catch (err) {
+        if (!err.hasBeenLogged) console.error(err);
+        res.statusMessage = 'Internal Server Error';
+        res.status(500).send();
+    }
+};
+
+exports.adminRequired = async function (req, res, next) {
+    const token = req.header('X-Authorization');
+
+    try {
+        const user = await findUserIdByToken(token);
+        if (user === null) {
+            res.status(401).send()
+        }
+        else if (user.permission < 5) {
+            res.status(403).send()
+        }
+        else {
+            req.authenticatedUserId = user.userId.toString();
+            next();
+        }
     } catch (err) {
         if (!err.hasBeenLogged) console.error(err);
         res.statusMessage = 'Internal Server Error';

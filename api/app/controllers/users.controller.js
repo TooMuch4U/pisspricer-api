@@ -91,3 +91,13 @@ exports.logout = async function (req, res) {
         res.status(500).send()
     }
 };
+exports.get = async function (req, res) {
+    try {
+        let users = await Users.search(req.query);
+        res.status(200).json(users)
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};

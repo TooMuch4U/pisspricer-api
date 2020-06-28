@@ -13,4 +13,7 @@ module.exports = function(app) {
     app.route(baseUrl + '/logout')
         .post(authenticate.loginRequired, users.logout);
 
+    app.route(baseUrl)
+        .get(authenticate.adminRequired, users.get);
+
 };

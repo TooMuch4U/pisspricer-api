@@ -50,3 +50,28 @@ exports.logout = async function (userId) {
         throw(err);
     }
 };
+function buildSearchSql(query) {
+    const sql = `   SELECT firstname, lastname, U.user_id, permission, login_date, 
+                            IFNULL(stores, 0) as store_count, 
+                            IFNULL(locations, 0) as location_count
+                    FROM            user U
+                        LEFT JOIN   (SELECT user_id, count(store_id) as stores
+                                     FROM user_access_store
+                                     GROUP BY user_id) S ON U.user_id = S.user_id
+                        LEFT JOIN   (SELECT user_id, count(store_loc_id) as locations
+                                     FROM user_access_location
+                                     GROUP BY user_id) L ON S.user_id = L.user_id
+                                     `;
+    return sql
+}
+exports.search = async function (query) {
+    const sql = buildSearchSql(query);
+    try {
+        let rows = await db.getPool().query(sql);
+        return tools.toCamelCase(rows);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};
