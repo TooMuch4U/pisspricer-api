@@ -16,3 +16,27 @@ exports.create = async function (user) {
         throw err;
     }
 };
+exports.userByEmail = async function (email) {
+    const sql = "SELECT * FROM user WHERE email = ?";
+    try {
+        let response = await db.getPool().query(sql, [email]);
+        return response.length < 1 ? null : tools.toCamelCase(response[0])
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        return null;
+    }
+};
+exports.login = async function (userId) {
+    const sql = "UPDATE user SET auth_token = ? WHERE user_id = ?";
+    try {
+        const authToken = randtoken.generate(32);
+        const rows = await db.getPool().query(sql, [authToken, userId]);
+        console.log(userId);
+        return {userId, authToken};
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err)
+    }
+};

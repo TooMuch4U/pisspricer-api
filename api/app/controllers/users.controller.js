@@ -48,3 +48,38 @@ exports.create = async function (req, res) {
             .send()
     }
 };
+
+exports.login = async function (req, res) {
+    let message = '';
+    if (!isValidEmail(req.body.email)) {
+        message = 'Email is not valid';
+    }
+    if (req.body.password == null || req.body.password.length == 0) {
+        message = 'Password must have at least 1 character'
+    }
+
+    if (message !== '') {
+        res.statusMessage = message;
+        res.status(400).send();
+    }
+    else {
+        try {
+            let foundUser = await Users.userByEmail(req.body.email);
+            if (foundUser === null || !await passwords.compare(req.body.password, foundUser.password)) {
+                res.statusMessage = 'invalid email/password supplied';
+                res.status(400).send();
+            }
+            else {
+                const user = await Users.login(foundUser.userId);
+                res.status(200).json(user);
+            }
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).send();
+        }
+
+    }
+
+};
+
