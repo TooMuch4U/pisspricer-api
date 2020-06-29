@@ -9,5 +9,6 @@ module.exports = function(app) {
         .post(authenticate.adminRequired, brands.insert);
     app.route(baseUrl + '/:brandId')
         .get(brands.getOne)
-        .patch(authenticate.adminRequired, brands.update);
+        .patch(authenticate.adminRequired, brands.update)
+        .delete(authenticate.adminRequired, brands.delete);
 };

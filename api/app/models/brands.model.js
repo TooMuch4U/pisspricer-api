@@ -71,3 +71,17 @@ exports.update = async function (brand, brandId) {
         throw(err);
     }
 };
+exports.deleteById = async function (brandId) {
+    const sql = `DELETE FROM store
+                 WHERE store_id = ?`;
+    try {
+        const response = await db.getPool().query(sql, [brandId]);
+        if (response.affectedRows !== 1) {
+            throw Error(`Should be exactly one petition that was deleted, but it was ${response.changedRows}.`);
+        }
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};

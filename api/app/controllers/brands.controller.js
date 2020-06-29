@@ -76,3 +76,20 @@ exports.update = async function (req, res) {
         res.status(500).send();
     }
 };
+exports.delete = async function (req, res) {
+    try {
+        let brand = await Brands.getById(req.params.brandId);
+        if (brand == null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send()
+        }
+        else {
+            await Brands.deleteById(req.params.brandId);
+            res.status(200).send();
+        }
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send();
+    }
+};
