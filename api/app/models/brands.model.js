@@ -29,3 +29,18 @@ exports.insert = async function (brand) {
         throw(err);
     }
 };
+exports.getById = async function (brandId) {
+    const sql = `SELECT store_id as brand_id,
+                        name,
+                        url
+                 FROM store
+                 WHERE store_id = ?`;
+    try {
+        const rows = await db.getPool().query(sql, [brandId]);
+        return rows.length < 1 ? null : tools.toCamelCase(rows[0]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};

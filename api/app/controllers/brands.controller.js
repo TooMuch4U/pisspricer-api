@@ -36,4 +36,19 @@ exports.insert = async function (req, res) {
         res.status(500).send()
     }
 };
-
+exports.getOne = async function (req, res) {
+    try {
+        const brand = await Brands.getById(req.params.brandId);
+        if (brand == null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send();
+        }
+        else {
+            res.status(200).json(brand);
+        }
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)};
+        console.log(err);
+    }
+};

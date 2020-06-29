@@ -7,5 +7,6 @@ module.exports = function(app) {
     app.route(baseUrl + '/')
         .get(brands.getAll)
         .post(authenticate.adminRequired, brands.insert);
-
+    app.route(baseUrl + '/:brandId')
+        .get(brands.getOne);
 };
