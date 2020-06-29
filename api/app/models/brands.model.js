@@ -44,3 +44,30 @@ exports.getById = async function (brandId) {
         throw(err);
     }
 };
+function generateUpdateSql(brand, brandId) {
+    let sql = `UPDATE store SET `;
+    let data = [];
+    let stats = [];
+    if (brand.name != null) {
+        stats.push('name = ?');
+        data.push(brand.name);
+    }
+    if (brand.url != null) {
+        stats.push('url = ?');
+        data.push(brand.url);
+    }
+    sql = sql + stats.join(', ') + ` WHERE store_id = ?`;
+    data.push(brandId);
+    return [sql, data]
+}
+exports.update = async function (brand, brandId) {
+    const [sql, data] = generateUpdateSql(brand, brandId);
+    try {
+        let response = await db.getPool().query(sql, data);
+        return response.length < 1 ? null : response.insertId;
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};

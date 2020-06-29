@@ -8,5 +8,6 @@ module.exports = function(app) {
         .get(brands.getAll)
         .post(authenticate.adminRequired, brands.insert);
     app.route(baseUrl + '/:brandId')
-        .get(brands.getOne);
+        .get(brands.getOne)
+        .patch(authenticate.adminRequired, brands.update);
 };
