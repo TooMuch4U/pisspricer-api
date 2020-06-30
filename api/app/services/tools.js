@@ -1,4 +1,6 @@
 const humps = require('humps');
+const Validator = require('validatorjs');
+
 
 // To and from camel case
 exports.toCamelCase = function (object) {
@@ -84,4 +86,24 @@ exports.isInThePast = function (date) {
 exports.logSqlError = function (err) {
     console.error(`An error occurred when executing: \n${err.sql} \nERROR: ${err.sqlMessage}`);
     err.hasBeenLogged = true;
+};
+
+exports.nullOrEmpty = function (string) {
+    if (string == null || string == "") {
+        return true;
+    }
+    else {
+        return false;
+    }
+};
+
+exports.validate = function (data, rules) {
+    let validation = new Validator(data, rules);
+    let error = null;
+    let isPass = validation.passes();
+    for (let key in validation.errors.all()) {
+        error = validation.errors.first(key);
+        break
+    }
+    return [isPass, error];
 };

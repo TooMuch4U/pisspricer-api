@@ -41,6 +41,7 @@ module.exports = function () {
     // ROUTES //
     require('../app/routes/users.routes')(app);
     require('../app/routes/brands.routes')(app);
+    require('../app/routes/stores.routes')(app);
 
     return app;
 };
