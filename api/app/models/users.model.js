@@ -32,7 +32,6 @@ exports.login = async function (userId) {
     try {
         const authToken = randtoken.generate(32);
         const rows = await db.getPool().query(sql, [authToken, userId]);
-        console.log(userId);
         return {userId, authToken};
     }
     catch (err) {

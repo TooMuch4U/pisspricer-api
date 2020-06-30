@@ -42,6 +42,7 @@ module.exports = function () {
     require('../app/routes/users.routes')(app);
     require('../app/routes/brands.routes')(app);
     require('../app/routes/stores.routes')(app);
+    require('../app/routes/regions.routes')(app);
 
     return app;
 };
