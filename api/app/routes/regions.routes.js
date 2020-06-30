@@ -6,5 +6,11 @@ module.exports = function(app) {
 
     app.route(baseUrl + '/')
         .post(authenticate.adminRequired, regions.create)
+        .get(regions.getAll);
+
+    app.route(baseUrl + '/:regionId')
+        .get(regions.getOne)
+        .patch(authenticate.adminRequired, regions.modify)
+        .delete(authenticate.adminRequired, regions.delete);
 
 };
