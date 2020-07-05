@@ -43,6 +43,7 @@ module.exports = function () {
     require('../app/routes/brands.routes')(app);
     require('../app/routes/stores.routes')(app);
     require('../app/routes/regions.routes')(app);
+    require('../app/routes/categories.routes')(app);
 
     return app;
 };
