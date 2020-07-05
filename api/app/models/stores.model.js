@@ -72,3 +72,29 @@ exports.getOne = async function (storeId) {
         throw (err);
     }
 };
+exports.update = async function (data, storeId) {
+    const sql = `UPDATE store_location SET ? WHERE store_loc_id = ?`;
+    try {
+        let result = await db.getPool().query(sql, [data, storeId]);
+        if (result.affectedRows !== 1) {
+            throw Error(`Should be exactly one store that was changed, but it was ${result.changedRows}.`)
+        }
+    } catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};
+exports.delete = async function (storeId) {
+    const sql = `DELETE FROM store_location WHERE store_loc_id = ?`;
+    try {
+        const result = await db.getPool().query(sql, [storeId]);
+        if (result.affectedRows != 1) {
+            console.log(`Should be exactly one store that was deleted, but it was ${result.changedRows}.`);
+            throw Error(`Should be exactly one store that was deleted, but it was ${result.changedRows}.`);
+        }
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};

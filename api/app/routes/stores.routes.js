@@ -9,7 +9,8 @@ module.exports = function(app) {
         .post(authenticate.adminRequired, stores.create);
     app.route(baseUrl + '/:storeId')
         .get(stores.getOne)
-        .patch(stores.modify);
+        .patch(authenticate.adminRequired, stores.modify)
+        .delete(authenticate.adminRequired, stores.delete);
 
 
 

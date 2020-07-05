@@ -16,3 +16,28 @@ exports.insert = async function (location, storeId) {
         throw(err);
     }
 };
+exports.getByStoreId = async function (storeId) {
+    const sql = `SELECT lattitude, longitude, store_loc_id as store_id, region_id, address, postcode
+                 FROM location WHERE store_loc_id = ?`;
+    try {
+        const rows = await db.getPool().query(sql, [storeId]);
+        return rows.size == 0 ? null : tools.toCamelCase(rows[0])
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};
+exports.update = async function (data, storeId) {
+    const sql = `UPDATE location SET ? WHERE store_loc_id = ?`;
+    try {
+        let result = await db.getPool().query(sql, [data, storeId]);
+        if (result.affectedRows !== 1) {
+            console.log(`Should be exactly one location that was changed, but it was ${result.changedRows}.`);
+            throw Error(`Should be exactly one location that was changed, but it was ${result.changedRows}.`)
+        }
+    } catch(err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};

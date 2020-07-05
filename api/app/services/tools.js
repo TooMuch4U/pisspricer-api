@@ -107,3 +107,28 @@ exports.validate = function (data, rules) {
     }
     return [isPass, error];
 };
+
+exports.mapObject = function (data, mappings) {
+    let newData = {};
+    for (let i = 0; i < mappings.length; i++) {
+        let curObj = mappings[i];
+        if (curObj.nullable) {
+            if (data[curObj.oldKey] != null) {
+                if (data[curObj.oldKey] === "") {
+                    newData[curObj.newKey] = null;
+                }
+                else {
+                    newData[curObj.newKey] = data[curObj.oldKey];
+                }
+            }
+
+        }
+        else {
+            if (data[curObj.oldKey] != null) {
+                newData[curObj.newKey] = data[curObj.oldKey];
+            }
+        }
+    }
+    return newData;
+
+};

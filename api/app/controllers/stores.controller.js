@@ -90,6 +90,17 @@ exports.modify = async function (req, res) {
         address: "numeric",
         postcode: "numeric"
     };
+    let storeData = tools.mapObject(req.body,[
+        {"oldKey": "brandId", "newKey": "store_id", "nullable": false},
+        {"oldKey": "name", "newKey": "name", "nullable": false},
+        {"oldKey": "url", "newKey": "url", "nullable": false}]);
+    let locationData = tools.mapObject(req.body,[
+        {"oldKey": "lattitude", "newKey": "lattitude", "nullable": false},
+        {"oldKey": "longitude", "newKey": "longitude", "nullable": false},
+        {"oldKey": "regionId", "newKey": "region_id", "nullable": false},
+        {"oldKey": "postcode", "newKey": "postcode", "nullable": false},
+        {"oldKey": "address", "newKey": "address", "nullable": false}]);
+
     try {
         let [isPass, error] = tools.validate(req.body, rules);
 
@@ -99,15 +110,20 @@ exports.modify = async function (req, res) {
         }
         else {
             const brand = await Brands.getById(req.body.brandId);
-            if (brand != null) {
+            if (!Object.keys(storeData).includes("store_id") || brand != null) {
                 const region = Regions.getById(req.body.regionId);
                 if (region == null) {
                     res.statusMessage = "Field regionId doesn't reference a region";
                     res.status(400).send();
                 }
                 else {
-                    const storeId = await Stores.insert(req.body);
-                    res.status(201).json(tools.toCamelCase({storeId}));
+                    if (Object.keys(storeData).length > 0) {
+                        await Stores.update(storeData, req.params.storeId);
+                    }
+                    if (Object.keys(locationData).length > 0) {
+                        await Locations.update(locationData, req.params.storeId);
+                    }
+                    res.status(200).send();
                 }
             }
             else {
@@ -117,6 +133,22 @@ exports.modify = async function (req, res) {
         }
     }
     catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+exports.delete = async function (req, res) {
+    try {
+        const store = await Stores.getOne(req.params.storeId);
+        if (store == null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send()
+        }
+        else {
+            await Stores.delete(req.params.storeId);
+            res.status(200).send();
+        }
+    } catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}
         res.status(500).send()
     }
