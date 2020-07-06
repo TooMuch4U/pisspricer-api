@@ -11,7 +11,4 @@ module.exports = function(app) {
         .get(stores.getOne)
         .patch(authenticate.adminRequired, stores.modify)
         .delete(authenticate.adminRequired, stores.delete);
-
-
-
 };

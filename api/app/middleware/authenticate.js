@@ -19,7 +19,7 @@ async function findUserIdByToken(token) {
             return tools.toCamelCase(rows[0]);
         }
     } catch (err) {
-        errors.logSqlError(err);
+        tools.logSqlError(err);
         throw err;
     }
 }
@@ -50,6 +50,10 @@ exports.setAuthenticatedUser = async function (req, res, next) {
         const result = await findUserIdByToken(token);
         if (result !== null) {
             req.authenticatedUserId = result.userId.toString();
+            req.userPermission = result.permission;
+        }
+        else {
+            req.userPermission = 0;
         }
         next();
     } catch (err) {

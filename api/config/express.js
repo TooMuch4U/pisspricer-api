@@ -44,6 +44,7 @@ module.exports = function () {
     require('../app/routes/stores.routes')(app);
     require('../app/routes/regions.routes')(app);
     require('../app/routes/categories.routes')(app);
+    require('../app/routes/items.routes')(app);
 
     return app;
 };
