@@ -12,4 +12,12 @@ module.exports = function(app) {
         .get(authenticate.setAuthenticatedUser, items.getOne)
         .delete(authenticate.adminRequired, items.delete)
         .patch(authenticate.adminRequired, items.modify);
+
+    app.route(baseUrl + '/:sku/barcodes')
+        .get(authenticate.adminRequired, items.getBarcodes)
+        .post(authenticate.adminRequired, items.addBarcode);
+
+    app.route(baseUrl + '/:sku/barcodes/:ean')
+        .delete(authenticate.adminRequired, items.deleteBarcode);
+
 };

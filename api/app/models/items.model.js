@@ -120,3 +120,54 @@ exports.update = async function (itemChanges, sku) {
         throw (err);
     }
 };
+
+exports.getAllBarcodes = async function (sku) {
+    const sql = `SELECT ean FROM item_barcode WHERE sku = ?`;
+    try {
+        const rows = await db.getPool().query(sql, [sku]);
+        return rows
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};
+exports.getOneBarcode = async function (sku, ean) {
+    const sql = `SELECT ean FROM item_barcode WHERE sku = ? AND ean = ?`;
+    try {
+        const rows = await db.getPool().query(sql, [sku, ean.toString()]);
+        return rows.length < 1 ? null : rows[0]
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};
+exports.deleteBarcode = async function (sku, ean) {
+    const sql = `DELETE FROM item_barcode WHERE sku = ? AND ean = ?`;
+    try {
+        const results = await db.getPool().query(sql, [sku, ean.toString()]);
+        if (results.affectedRows != 1) {
+            console.log(`Should be exactly 1 row changed, but there was actually: ${results.changedRows}`);
+            throw Error(`Should be exactly 1 row changed, but there was actually: ${results.changedRows}`);
+        }
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};
+exports.insertBarcode = async function (sku, ean) {
+    const sql = `INSERT INTO item_barcode SET sku = ?, ean = ?`;
+    let result;
+    try {
+        result = await db.getPool().query(sql, [sku, ean.toString()]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+    if (result.affectedRows != 1) {
+        throw Error(`Should be 1 row inserted, there was actually: ${result.changedRows}`);
+    }
+};

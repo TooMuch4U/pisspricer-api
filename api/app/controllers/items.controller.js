@@ -175,3 +175,71 @@ exports.modify = async function (req, res) {
         res.status(500).send()
     }
 };
+
+exports.getBarcodes = async function (req, res) {
+    try {
+        const item = await Items.getBySku(req.params.sku);
+        if (item == null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send();
+            return;
+        }
+
+        res.status(200).json(item.barcodes)
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+exports.deleteBarcode = async function (req, res) {
+    try {
+        const item = await Items.getOneBarcode(req.params.sku, req.params.ean);
+        if (item == null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send();
+            return;
+        }
+
+        await Items.deleteBarcode(req.params.sku, req.params.ean);
+        res.status(200).send()
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+exports.addBarcode = async function (req, res) {
+    const rules = {
+        "barcode": "required|string"
+    };
+    try {
+        const item = await Items.getBySku(req.params.sku);
+        if (item == null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send();
+            return;
+        }
+
+        const [pass, error] = tools.validate(req.body, rules);
+
+        if (!pass) {
+            res.statusMessage = error;
+            res.status(400).send();
+            return;
+        }
+
+        if (item.barcodes.includes(req.body.barcode.toString())) {
+            res.statusMessage = "Barcode must be new";
+            res.status(400).send();
+            return;
+        }
+
+        await Items.insertBarcode(req.params.sku, req.body.barcode);
+        res.status(200).send()
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
