@@ -110,8 +110,17 @@ exports.validate = function (data, rules) {
 
 exports.mapObject = function (data, mappings) {
     let newData = {};
+    let keys = Object.keys(data);
     for (let i = 0; i < mappings.length; i++) {
         let curObj = mappings[i];
+        if (keys.includes(curObj.oldKey)) {
+            if (curObj.newKey != null) {
+                newData[curObj.newKey] = data[curObj.oldKey];
+            }
+            else {
+                newData[curObj.oldKey] = data[curObj.oldKey];
+            }
+        }
         if (curObj.nullable) {
             if (data[curObj.oldKey] != null) {
                 if (data[curObj.oldKey] === "") {
@@ -128,6 +137,21 @@ exports.mapObject = function (data, mappings) {
                 newData[curObj.newKey] = data[curObj.oldKey];
             }
         }
+    }
+    return newData;
+
+};
+
+
+exports.onlyInclude = function (data, includeKeys) {
+    let newData = {};
+    let keys = Object.keys(data);
+    for (let i = 0; i < includeKeys.length; i++) {
+        let key = includeKeys[i];
+        if (keys.includes(key)) {
+            newData[key] = data[key];
+        }
+
     }
     return newData;
 

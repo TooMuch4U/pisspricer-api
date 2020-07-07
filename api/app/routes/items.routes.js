@@ -7,4 +7,9 @@ module.exports = function(app) {
     app.route(baseUrl + '/')
         .get(authenticate.setAuthenticatedUser, items.getAll)
         .post(authenticate.adminRequired, items.create);
+
+    app.route(baseUrl + '/:sku')
+        .get(authenticate.setAuthenticatedUser, items.getOne)
+        .delete(authenticate.adminRequired, items.delete)
+        .patch(authenticate.adminRequired, items.modify);
 };
