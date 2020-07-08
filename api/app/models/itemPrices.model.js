@@ -3,24 +3,87 @@ const passwords = require('../services/passwords');
 const tools = require('../services/tools');
 const randtoken = require('rand-token');
 
-exports.getAll = async function (sku) {
-    const sql = `SELECT P.store_loc_id as store_id,
+function generateSelectSql(sku, queryData, isAdmin) {
+    let sql = `SELECT P.store_loc_id as store_id,
                         P.url,
-                        S.name as store_name.,
+                        S.name as store_name,
                         S.store_id as brand_id,
                         B.name as brand_name,
                         P.price,
                         P.sale_price,
                         P.stock,
-                        P.last_check as date_checked
-                        
-                  FROM            location_stocks_item P
+                        P.last_check as date_checked,
+                        IF(P.price > P.sale_price, P.sale_price, P.price) AS best_price, `;
+    let data = [];
+
+    // Set distance if possible
+    if (queryData.lng == null || queryData.lat == null) {
+        sql = sql + ` 0 as distance`;
+
+    }
+    else {
+        sql = sql + `ST_Distance_Sphere(
+                        point(L.longitude, L.lattitude),
+                        point(?, ?)
+                    )/1000 as distance`;
+        data = [
+            queryData.lng,
+            queryData.lat
+        ];
+    }
+
+    // Admin data
+    if (isAdmin) {
+        sql = sql + `, P.internal_sku`
+    }
+
+    // Sku
+    data.push(sku);
+    sql = sql + `\nFROM location_stocks_item P
                         LEFT JOIN store_location S ON P.store_loc_id = S.store_loc_id
                         LEFT JOIN store B ON S.store_id = B.store_id
+                        LEFT JOIN location L ON S.store_loc_id = L.store_loc_id
                   
-                  WHERE P.sku = ?`;
+                  WHERE P.sku = ?\n`;
+
+    // Radius
+    if (queryData.r != null) {
+        sql = sql + ` HAVING distance <= ?\n`;
+        data.push(queryData.r);
+    }
+
+    // Order
+    sql = sql + `ORDER BY `;
+    if (queryData.order == "dist-asc") {
+        sql = sql + `distance ASC, best_price ASC`;
+    }
+    else if (queryData.order == "dist-desc") {
+        sql = sql + `distance DESC, best_price ASC`;
+    }
+    else if (queryData.order == "price-desc") {
+        sql = sql + `best_price DESC, distance ASC`;
+    }
+    else {
+        sql = sql + `best_price ASC, distance ASC`;
+    }
+    sql = sql + `\n`;
+
+    // LIMIT and OFFSET
+    if (typeof queryData.count !== 'undefined') {
+        sql = sql + `LIMIT ?\n`;
+        data.push(queryData.count);
+    }
+    if (typeof queryData.index !== 'undefined') {
+        sql = sql + `OFFSET ?\n`;
+        data.push(queryData.count);
+    }
+
+    return {sql: sql, data: data};
+};
+exports.getAll = async function (sku, queryData, isAdmin) {
     try {
-        const rows = await db.getPool().query(sql, [sku]);
+        const query = generateSelectSql(sku, queryData, isAdmin);
+        const rows = await db.getPool().query(query.sql, query.data);
         return tools.toCamelCase(rows)
     }
     catch (err) {

@@ -7,8 +7,17 @@ const passwords = require('../services/passwords');
 const tools = require('../services/tools');
 
 exports.getStores = async function (req, res) {
+    const rules = {
+        "lat":   "required_with:lng|numeric",
+        "lng":   "required_with:lat|numeric",
+        "r":     "numeric",
+        "order": "string",
+        "index":     "integer",
+        "count": "integer|min:0"
+    };
     try {
         const sku = req.params.sku;
+        const isAdmin = req.userPermission >= 5;
 
         // Check if item exists
         const item = await Items.getBySku(sku);
@@ -18,13 +27,15 @@ exports.getStores = async function (req, res) {
             return;
         }
 
-        let priceList;
-        if (req.userPermission < 5) {
-            priceList = await Prices.getAll(sku);
+        // Validate parameters
+        const [isPass, error] = tools.validate(req.params, rules);
+        if (!isPass) {
+            res.statusMessage = error;
+            res.status(400).send();
+            return;
         }
-        else {
-            priceList = await Prices.getAllAdmin(sku);
-        }
+
+        let priceList = await Prices.getAll(sku, req.query, isAdmin);
         res.status(200).json(priceList)
     }
     catch (err) {
