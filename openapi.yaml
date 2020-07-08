@@ -1,1605 +1,1482 @@
 openapi: 3.0.0
 info:
-  title: Pisspricer API
-  version: "1.0"
-servers:
-- url: https://virtserver.swaggerhub.com/t22124/pisspricer-api/1.0
-  description: SwaggerHub API Auto Mocking
-security:
-- bearerAuth: []
-paths:
+  version: '1.0'
+  title: 'Pisspricer API'
+  description: ''
+paths: 
   /items:
     get:
+      summary: "Get all items"
+      description: "Permission required to see: barcodeCount, internalSku"
       tags:
-      - Items
-      summary: Get all items
-      description: 'Permission required to see: barcodes, internalSku'
-      parameters:
-      - name: search
-        in: query
-        description: String to search for item
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: count
-        in: query
-        description: Number of results to display
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: startIndex
-        in: query
-        description: Index to start count from
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: sort
-        in: query
-        description: Sort order
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: catId
-        in: query
-        description: Category to filter
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: ean
-        in: query
-        description: Returns only skus that match the barcode
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: regionId
-        in: query
-        description: Region to look in
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: lat
-        in: query
-        description: Lattitude
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-      - name: lng
-        in: query
-        description: Longitude
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-      - name: r
-        in: query
-        description: Radius to search
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
+        - Items
+      security: []
+      parameters: 
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: "String to search for item"
+        - in: query
+          name: count
+          schema:
+            type: integer
+          description: "Number of results to display"
+        - in: query
+          name: startIndex
+          schema:
+            type: integer
+          description: "Index to start count from"
+        - in: query
+          name: sort
+          schema:
+            type: string
+          description: "Sort order"
+        - in: query
+          name: catId
+          schema:
+            type: integer
+          description: "Category to filter"
+        - in: query
+          name: ean
+          schema:
+            type: integer
+          description: "Returns only skus that match the barcode"
+        - in: query
+          name: regionId
+          schema:
+            type: integer
+          description: "Region to look in"
+        - in: query
+          name: lat
+          schema:
+            type: number
+          description: "Lattitude"
+        - in: query
+          name: lng
+          schema:
+            type: number
+          description: "Longitude"
+        - in: query
+          name: r
+          schema:
+            type: integer
+          description: "Radius to search"
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/inline_response_200'
-        "400":
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sku:
+                          type: integer
+                        name:
+                          type: string
+                        brand:
+                          type: string
+                        slug:
+                          type: string
+                        category:
+                          type: string
+                        categoryId:
+                          type: integer
+                        subcategoryId:
+                          type: integer
+                        subcategory:
+                          type: string
+                        barcodeCount:
+                          type: integer
+                        stdDrinks:
+                          type: number
+                        alcoholContent:
+                          type: number
+                        volumeTotal:
+                          type: integer
+                        storeCount:
+                          type: integer
+                        storeName:
+                          type: string
+                        storeUrl:
+                          type: string
+                        storeId:
+                          type: integer
+                        storeBrandId:
+                          type: integer
+                        storeBrandName:
+                          type: string
+                        price:
+                          type: number
+                        salePrice:
+                          type: number
+                        stock:
+                          type: string
+                        dateChecked:
+                          type: string
+                        internalSku:
+                          type: string
+        '400':
           description: Bad Request
-        "500":
+        '500':
           description: Server Error
-      security: []
     post:
-      tags:
-      - Items
       summary: Add a new item/sku
+      tags: 
+        - Items
+      security: 
+        - bearerAuth: [admin]
       requestBody:
-        description: 'Optional: brand, barcodes'
+        description: "Optional: brand, barcodes"
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body'
-        required: true
+              type: object
+              properties:
+                name:
+                  type: string
+                brand:
+                  type: string
+                slug:
+                  type: string
+                categoryId:
+                  type: integer
+                subcategoryId:
+                  type: integer
+                stdDrinks:
+                  type: number
+                alcoholContent:
+                  type: number
+                volumeTotal:
+                  type: integer
+                barcodes:
+                  type: array
+                  items:
+                    type: string
+      
       responses:
-        "201":
+        '201':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_201'
-        "400":
+                type: object
+                properties:
+                  sku:
+                    type: integer
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "500":
+        '500':
           description: Server Error
-      security:
-      - bearerAuth:
-        - admin
+             
   /items/{sku}:
+    parameters:
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item
     get:
-      tags:
-      - Items
       summary: Get item with sku
+      tags:
+        - Items
+      security: []
       parameters:
-      - name: sku
-        in: path
-        description: Sku of item to get
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item to get
       responses:
-        "200":
+        '200':
           description: OK
-          content:
+          content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
-        "401":
+                type: object
+                properties:
+                  name:
+                    type: string
+                  brand:
+                    type: string
+                  slug:
+                    type: string
+                  category:
+                    type: string
+                  categoryId:
+                    type: integer
+                  subcategory:
+                    type: string
+                  subcategoryId:
+                    type: integer
+                  stdDrinks:
+                    type: number
+                  alcoholContent:
+                    type: number
+                  totalVolume:
+                    type: integer
+                  barcodes:
+                    type: array
+                    items:
+                      type: string
+        '401':
           description: Unauthorized
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
-      security: []
     delete:
+      summary: "Deletes item with sku"
       tags:
-      - Items
-      summary: Deletes item with sku
-      parameters:
-      - name: sku
-        in: path
-        description: Sku of item
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Items
       responses:
-        "200":
+        '200':
           description: OK
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
     patch:
+      summary: "Updates item data"
       tags:
-      - Items
-      summary: Updates item data
-      parameters:
-      - name: sku
-        in: path
-        description: Sku of item
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Items
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_1'
+              type: object
+              properties:
+                slug:
+                  type: string
+                name:
+                  type: string
+                brand:
+                  type: string
+                categoryId:
+                  type: integer
+                subcategoryId:
+                  type: integer
+                stdDrinks:
+                  type: number
+                alcoholContent:
+                  type: number
+                totalVolume:
+                  type: integer
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
+  
+  /items/{sku}/barcodes:
+    parameters:
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item
+    
+    get:
+      summary: "Gets all item barcodes"
+      tags:
+        - Items
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+      
+    post:
+      summary: "Adds an item barcode"
+      tags:
+        - Items
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                barcode:
+                  type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+          
+      
+  /items/{sku}/barcodes/{ean}:
+    parameters:
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item
+        - in: path
+          name: ean
+          schema:
+            type: string
+          required: true
+          description: Ean of item
+    delete:
+      summary: "deletes an items barcode"
+      tags:
+        - Items
+      security:
+        - bearerAuth: []
+      responses:
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+          
   /items/{sku}/stores:
+    parameters:
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item
+        - in: query
+          name: lat
+          schema:
+            type: number
+          required: false
+          description: lattitude
+        - in: query
+          name: lng
+          schema:
+            type: number
+          required: false
+          description: longitude
+        - in: query
+          name: r
+          schema:
+            type: integer
+          required: false
+          description: radius to search in
+        - in: query
+          name: order
+          schema:
+            type: string
+          required: false
+          description: Ordering of items
+        - in: query
+          name: index
+          schema:
+            type: integer
+          required: false
+          description: index to start search
+        - in: query
+          name: count
+          schema:
+            type: integer
+          required: false
+          description: Ammount to show on page
+          
     get:
+      summary: "Get all the stores and prices the item is in"
+      description: "Can be ordered by: price-asc, price-desc, dist-asc, dist-desc"
       tags:
-      - Item in Store
-      summary: Get all the stores and prices the item is in
-      parameters:
-      - name: sku
-        in: path
-        description: Sku of item
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Item in Store
+      security: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/items_store'
-        "401":
+                  type: object
+                  properties:
+                    storeName:
+                      type: string
+                    storeUrl:
+                      type: string
+                    storeId:
+                      type: integer
+                    brandId:
+                      type: integer
+                    brandName:
+                      type: string
+                    price:
+                      type: number
+                    salePrice:
+                      type: number
+                    stock:
+                      type: string
+                    dateChecked:
+                      type: string
+                    internalSku:
+                      type: string
+        '401':
           description: Unauthorized
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
-      security: []
+              
   /items/{sku}/stores/{storeId}:
+    parameters:
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item
+        - in: path
+          name: storeId
+          schema:
+            type: integer
+          required: true
+          description: Store id
     get:
+      summary: "Gets a single store price for an item"
       tags:
-      - Item in Store
-      summary: Gets a single store price for an item
-      parameters:
-      - name: sku
-        in: path
-        description: Sku of item
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Item in Store
+      security: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/items_store'
-      security: []
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+                  storeId:
+                    type: integer
+                  storeBrandId:
+                    type: integer
+                  storeBrandName:
+                    type: string
+                  price:
+                    type: number
+                  salePrice:
+                    type: number
+                  stock:
+                    type: string
+                  dateChecked:
+                    type: string
+                  internalSku:
+                    type: string
     put:
+      summary: "Gets a single store price for an item"
       tags:
-      - Item in Store
-      summary: Gets a single store price for an item
-      parameters:
-      - name: sku
-        in: path
-        description: Sku of item
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Item in Store
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/body_2'
+              schema:
+                type: object
+                properties:
+                  salePrice:
+                    type: number
+                  price:
+                    type: number
+                  stock:
+                    type: string
+                  internalSku:
+                    type: string
+                  url:
+                    type: string
       responses:
-        "200":
+        '200':
           description: OK
-        "201":
+        '201':
           description: OK Created
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
     delete:
+      summary: "Delete an item from a store"
       tags:
-      - Item in Store
-      summary: Delete an item from a store
-      parameters:
-      - name: sku
-        in: path
-        description: Sku of item
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Item in Store
       responses:
-        "200":
+        '200':
           description: OK
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
-  /items/categories:
+  
+  /categories:
     get:
+      summary: "Gets all categories"
       tags:
-      - Categories
-      summary: Gets all categories
+        - Categories
+      security: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_2'
-        "500":
+                  type: object
+                  properties:
+                    categoryId:
+                      type: integer
+                    category:
+                      type: string
+                    
+        '500':
           description: Server Error
-      security: []
     post:
+      summary: "Add a new category"
       tags:
-      - Categories
-      summary: Add a new category
+        - Categories
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_3'
+              type: object
+              properties:
+                category:
+                  type: string
       responses:
-        "201":
+        '201':
           description: Ok Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_201_1'
-        "400":
+                type: object
+                properties:
+                  categoryId: 
+                    type: integer
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "500":
+        '500':
           description: Server Error
-      security:
-      - bearerAuth: []
-  /items/categories/{catId}:
+  
+  /categories/{catId}:
+    parameters:
+      - in: path
+        name: catId
+        schema:
+          type: integer
+        description: Category ID
+        required: true
     get:
+      summary: "Get a single category"
       tags:
-      - Categories
-      summary: Get a single category
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_3'
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
-    delete:
-      tags:
-      - Categories
-      summary: Deletes a category
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: OK
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
-      security:
-      - bearerAuth: []
-    patch:
-      tags:
-      - Categories
-      summary: Update category details
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_4'
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
-      security:
-      - bearerAuth: []
-  /items/categories/{catId}/subcategories:
-    post:
-      tags:
-      - Categories
-      summary: Submit new subcategory
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_5'
-      responses:
-        "201":
-          description: Ok Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_201_1'
-        "400":
-          description: Bad Request
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
-      security:
-      - bearerAuth: []
-  /items/categories/{catId}/subcategories/{subId}:
-    get:
-      tags:
-      - Categories
-      summary: Get a single subcategory
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: subId
-        in: path
-        description: Subcategory ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/body_5'
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
+        - Categories
       security: []
-    delete:
-      tags:
-      - Categories
-      summary: Delete a subcategory
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: subId
-        in: path
-        description: Subcategory ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
       responses:
-        "200":
+        '200':
           description: OK
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category: 
+                    type: string
+                  categoryId:
+                    type: integer
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
-      security:
-      - bearerAuth: []
     patch:
+      summary: "Update category details"
       tags:
-      - Categories
-      summary: Update a subcategory
-      parameters:
-      - name: catId
-        in: path
-        description: Category ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: subId
-        in: path
-        description: Subcategory ID
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Categories
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_6'
+              type: object
+              properties:
+                category:
+                  type: string
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
-      security:
-      - bearerAuth: []
-  /stores/regions:
-    get:
+    delete:
+      summary: "Deletes a category"
       tags:
-      - Region
-      summary: Get all regions
+        - Categories
+      security:
+        - bearerAuth: []
       responses:
-        "200":
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+  
+  /categories/{catId}/subcategories:
+    parameters:
+      - in: path
+        name: catId
+        schema:
+          type: integer
+        description: Category ID
+        required: true
+    get:
+      summary: "Get all subcategories for a category"
+      tags:
+        - Categories
+      security: []
+      responses:
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_4'
-        "500":
+                  type: object
+                  properties:
+                    subcategoryId:
+                      type: integer
+                    subcategory:
+                      type: string
+        '404':
+          description: Not Found
+        '500':
           description: Server Error
-  /stores/regions/{regionId}:
-    get:
+    post:
+      summary: "Submit new subcategory"
       tags:
-      - Region
-      summary: Gets a single region
-      parameters:
-      - name: regionId
-        in: path
-        description: Region Id
-        required: true
-        style: simple
-        explode: false
+        - Categories
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subcategory:
+                  type: string
+      responses:
+        '201':
+          description: Ok Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subcategoryId:
+                    type: integer
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+    
+  /categories/{catId}/subcategories/{subId}:
+    parameters:
+      - in: path
+        name: catId
         schema:
           type: integer
+        description: Category ID
+        required: true
+      - in: path
+        name: subId
+        schema:
+          type: integer
+        description: Subcategory ID
+        required: true
+    get:
+      summary: "Get a single subcategory"
+      tags:
+        - Categories
+      security: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_5'
-    post:
+                type: object
+                properties:
+                  subcategory:
+                    type: string
+                  subcategoryId:
+                    type: integer
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+    
+    delete:
+      summary: "Delete a subcategory"
+      security: 
+        - bearerAuth: []
       tags:
-      - Region
-      summary: Creates new region
-      parameters:
-      - name: regionId
-        in: path
-        description: Region Id
-        required: true
-        style: simple
-        explode: false
+        - Categories
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+          
+  /regions:
+    get:
+      summary: "Get all regions"
+      security: []
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    regionId:
+                      type: string
+                    name:
+                      type: string
+                    lattitude:
+                      type: number
+                    longitude:
+                      type: number
+        '500':
+          description: Server Error
+  
+  /regions/{regionId}:
+    parameters:
+      - in: path
+        name: regionId
         schema:
           type: integer
+        required: true
+        description: Region Id
+    get:
+      summary: "Gets a single region"
+      security: []
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  regionId:
+                    type: integer
+                  name:
+                    type: string
+                  lattitude:
+                    type: number
+                  longitude:
+                    type: number
+    post:
+      summary: "Creates new region"
+      tags:
+        - Region
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_7'
+              type: object
+              properties:
+                lattitude:
+                  type: number
+                longitude:
+                  type: number
+                name:
+                  type: string
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
-          description: Server Error
-    delete:
-      tags:
-      - Region
-      summary: Deltets the region
-      parameters:
-      - name: regionId
-        in: path
-        description: Region Id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: OK
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
+        '500':
           description: Server Error
     patch:
+      summary: "Updates region data"
       tags:
-      - Region
-      summary: Updates region data
-      parameters:
-      - name: regionId
-        in: path
-        description: Region Id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Region
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_8'
+              type: object
+              properties:
+                lattitude:
+                  type: number
+                longitude:
+                  type: number
+                name:
+                  type: string
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
+          description: Server Error          
+    delete:
+      summary: "Deltets the region"
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':  
           description: Server Error
+  
   /stores:
     get:
+      summary: "Get all stores"
       tags:
-      - Store
-      summary: Get all stores
+        - Store
+      security: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_6'
-      security: []
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    storeId:
+                      type: integer
+                    url:
+                      type: string
+                    brandName:
+                      type: string
+                    brandId:
+                      type: integer
+                    brandUrl:
+                      type: string
+                    locLat:
+                      type: number
+                    locLng:
+                      type: number
+                    address:
+                      type: string
+                    postcode:
+                      type: integer
+                    
+                    regionName:
+                      type: number
+                    regLat:
+                      type: number
+                    regLng:
+                      type: string
     post:
+      summary: "Create a new store"
       tags:
-      - Store
-      summary: Create a new store
+        - Store
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_9'
+              type: object
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
+                brandId:
+                  type: integer
+                location:
+                  type: object
+                  properties:
+                    lattitude:
+                      type: number
+                    longitude:
+                      type: number
+                    address:
+                      type: string
+                    postcode:
+                      type: integer
+                    regionId:
+                      type: integer
       responses:
-        "201":
+        '201':
           description: Ok Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_201_2'
-        "400":
+                type: object
+                properties:
+                  storeId:
+                    type: integer
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "500":
+        '500':
           description: Server Error
+  
   /stores/{storeId}:
-    get:
-      tags:
-      - Store
-      summary: Gets store info for one store
-      parameters:
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
+    parameters:
+      - in: path
+        name: storeId
         schema:
           type: integer
+        required: true
+        description: "Store id"
+    get:
+      summary: "Gets store info for one store"
+      tags:
+        - Store
+      security: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_7'
-        "404":
+                type: object
+                properties:
+                  name:
+                    type: string
+                  storeId:
+                    type: integer
+                  url:
+                    type: string
+                  brandName:
+                    type: string
+                  brandId:
+                    type: integer
+                  brandUrl:
+                    type: string
+                  location:
+                    type: object
+                    properties:
+                      lattitude:
+                        type: number
+                      longitude:
+                        type: number
+                      address:
+                        type: string
+                      postcode:
+                        type: integer
+                      region:
+                        type: object
+                        properties:
+                          lattitude:
+                            type: number
+                          longitude:
+                            type: number
+                          name:
+                            type: string
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
-      security: []
-    delete:
-      tags:
-      - Store
-      summary: Deletes a store
-      parameters:
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: OK
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
-      security:
-      - bearerAuth: []
     patch:
-      tags:
-      - Store
       summary: Change store info
-      parameters:
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+      security:
+        - bearerAuth: []
+      tags:
+       - Store
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_10'
+              type: object
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
+                brandId:
+                  type: integer
+                lattitude:
+                  type: number
+                longitude:
+                  type: number
+                address:
+                  type: string
+                postcode:
+                  type: integer
+                regionId:
+                  type: integer
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
+        '500':
           description: Server Error
+    delete:
+      summary: "Deletes a store"
       security:
-      - bearerAuth: []
-  /stores/{storeId}/items:
-    get:
+        - bearerAuth: []
       tags:
-      - Store
-      summary: Get all items in store
-      parameters:
-      - name: storeId
-        in: path
-        description: Store id
-        required: true
-        style: simple
-        explode: false
+        - Store
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+      
+  /stores/{storeId}/items:
+    parameters:
+      - in: path
+        name: storeId
         schema:
           type: integer
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/inline_response_200_8'
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
+        required: true
+        description: "Store id"
+ 
   /brands:
     get:
+      summary: "Get all store brands"
+      security: []
       tags:
-      - Brand
-      summary: Get all store brands
+        - Brand
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_9'
-        "500":
+                  type: object
+                  properties:
+                    brandId:
+                      type: integer
+                    name:
+                      type: string
+                    url:
+                      type: string
+        '500':
           description: Server Error
-      security: []
     post:
+      summary: "Create new brand"
       tags:
-      - Brand
-      summary: Create new brand
+        - Brand
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_11'
+              type: object
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
       responses:
-        "201":
+        '201':
           description: Ok Created
-        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  brandId:
+                    type: integer
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "500":
+        '500':
           description: Server Error
+  
   /brands/{brandId}:
-    get:
-      tags:
-      - Brand
-      summary: Gets a single brand
-      parameters:
-      - name: brandId
-        in: path
-        description: Brand Id
-        required: true
-        style: simple
-        explode: false
+    parameters:
+      - in: path
+        name: brandId
         schema:
           type: integer
+        required: true
+        description: "Brand Id"
+    get:
+      summary: "Gets a single brand"
+      security: []
+      tags:
+        - Brand
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/body_11'
-      security: []
-    delete:
-      tags:
-      - Brand
-      summary: Deletes a brand and cascades
-      parameters:
-      - name: brandId
-        in: path
-        description: Brand Id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: OK
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
-          description: Server Error
-      security:
-      - bearerAuth: []
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
     patch:
+      summary: "Updates brand"
       tags:
-      - Brand
-      summary: Updates brand
-      parameters:
-      - name: brandId
-        in: path
-        description: Brand Id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - Brand
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_12'
+              type: object
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+        '400':
           description: Bad Request
-        "401":
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "404":
+        '404':
           description: Not Found
-        "500":
-          description: Server Error
+        '500':
+          description: Server Error   
+    delete:
+      summary: "Deletes a brand and cascades"
+      tags:
+        - Brand
       security:
-      - bearerAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+  
   /users:
     get:
-      tags:
-      - Users
-      summary: Gets all users
-      description: Must be admin
+      summary: "Gets all users"
+      description: "Must be admin"
       parameters:
-      - name: firstname
-        in: query
-        description: String to search for first name
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: lastname
-        in: query
-        description: String to search for last name
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: count
-        in: query
-        description: Number of results to display
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: startIndex
-        in: query
-        description: Index to start count from
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: sort
-        in: query
-        description: Sort order
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        - in: query
+          name: firstname
+          schema:
+            type: string
+          description: "String to search for first name"
+        - in: query
+          name: lastname
+          schema:
+            type: string
+          description: "String to search for last name"
+        - in: query
+          name: count
+          schema:
+            type: integer
+          description: "Number of results to display"
+        - in: query
+          name: startIndex
+          schema:
+            type: integer
+          description: "Index to start count from"
+        - in: query
+          name: sort
+          schema:
+            type: string
+          description: "Sort order"
+      tags:
+        - Users
+      security: 
+        - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_10'
-        "401":
+                  type: object
+                  properties:
+                    userId:
+                      type: integer
+                    email:
+                      type: string
+                    permission:
+                      type: integer
+                    lastLogin:
+                      type: string
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                    brands:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          brandId:
+                            type: integer
+                          name:
+                            type: string
+                          role: 
+                            type: string
+                    stores:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          storeId:
+                            type: integer
+                          name:
+                            type: string
+                          role:
+                            type: string
+        '401':
           description: Unauthorized
-        "403":
+        '403':
           description: Forbidden
-        "500":
+        '500':
           description: Server Error
-      security:
-      - bearerAuth: []
+    
   /users/login:
     post:
+      summary: "Login"
       tags:
-      - Users
-      summary: Login
+        - Users
+      security: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_13'
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
       responses:
-        "200":
+        '200':
           description: OK
-        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                  authToken:
+                    type: string
+        '400':
           description: Bad Request
-        "500":
+        '500':
           description: Server Error
-      security: []
+
   /users/register:
     post:
+      summary: "Register as a user"
+      description: "Email must have an @ symbol. Firstname, lastname and password must be atleast 1 character"
+      security: []
       tags:
-      - Users
-      summary: Register as a user
+        - Users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_14'
+              type: object
+              properties:
+                email:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                password:
+                  type: string
       responses:
-        "201":
+        '201':
           description: Ok Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_201_3'
-        "400":
+                type: object
+                properties:
+                  userId:
+                    type: integer
+        '400':
           description: Bad Request
-        "500":
+        '500':
           description: Server Error
-      security: []
+          
   /users/logout:
     post:
+      summary: "Logout"
       tags:
-      - Users
-      summary: Logout
-      responses:
-        "200":
-          description: OK
-        "401":
-          description: Unauthorized
-        "500":
-          description: Server Error
+        - Users
       security:
-      - bearerAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server Error
+                  
+  
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/t22124/pisspricer-api/1.0
+    
 components:
-  schemas:
-    inline_response_200_10:
-      type: object
-      properties:
-        userId:
-          type: integer
-        email:
-          type: string
-        permission:
-          type: integer
-        lastLogin:
-          type: string
-        firstname:
-          type: string
-        lastname:
-          type: string
-        brands:
-          type: array
-          items:
-            $ref: '#/components/schemas/users_brands'
-        stores:
-          type: array
-          items:
-            $ref: '#/components/schemas/users_stores'
-    users_stores:
-      type: object
-      properties:
-        storeId:
-          type: integer
-        name:
-          type: string
-        role:
-          type: string
-    stores_location_1:
-      type: object
-      properties:
-        lattitude:
-          type: number
-        longitude:
-          type: number
-        address:
-          type: string
-        postcode:
-          type: integer
-        regionId:
-          type: integer
-    users_brands:
-      type: object
-      properties:
-        brandId:
-          type: integer
-        name:
-          type: string
-        role:
-          type: string
-    inline_response_200_1_category:
-      type: object
-      properties:
-        category:
-          type: string
-        categoryId:
-          type: integer
-        subcategory:
-          type: string
-        subcategoryId:
-          type: integer
-    stores_location:
-      type: object
-      properties:
-        lattitude:
-          type: number
-        longitude:
-          type: number
-        address:
-          type: string
-        postcode:
-          type: integer
-        region:
-          $ref: '#/components/schemas/body_8'
-    body:
-      type: object
-      properties:
-        name:
-          type: string
-        brand:
-          type: string
-        slug:
-          type: string
-        categoryId:
-          type: integer
-        subcategoryId:
-          type: integer
-        stdDrinks:
-          type: number
-        alcoholContent:
-          type: number
-        volumeTotal:
-          type: integer
-        barcodes:
-          type: array
-          items:
-            type: string
-    itemscategories_subcategories:
-      type: object
-      properties:
-        id:
-          type: integer
-        subcategory:
-          type: string
-    body_3:
-      type: object
-      properties:
-        category:
-          type: string
-    body_4:
-      type: object
-      properties:
-        category:
-          type: string
-    body_1:
-      type: object
-      properties:
-        slug:
-          type: string
-        name:
-          type: string
-        brand:
-          type: string
-        categoryId:
-          type: integer
-        subcategoryId:
-          type: integer
-        stdDrinks:
-          type: number
-        alcoholContent:
-          type: number
-        totalVolume:
-          type: integer
-    body_2:
-      type: object
-      properties:
-        salePrice:
-          type: number
-        price:
-          type: number
-        stock:
-          type: string
-        internalSku:
-          type: string
-    inline_response_201:
-      type: object
-      properties:
-        sku:
-          type: integer
-    body_12:
-      type: object
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-    inline_response_200:
-      type: object
-      properties:
-        sku:
-          type: integer
-        name:
-          type: string
-        brand:
-          type: string
-        slug:
-          type: string
-        category:
-          $ref: '#/components/schemas/items_category'
-        barcodes:
-          type: array
-          items:
-            type: string
-        totalCount:
-          type: integer
-        count:
-          type: integer
-        stdDrinks:
-          type: number
-        alcoholContent:
-          type: number
-        volumeTotal:
-          type: integer
-        store:
-          $ref: '#/components/schemas/items_store'
-    body_13:
-      type: object
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-    body_9:
-      type: object
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-        brandId:
-          type: integer
-        location:
-          $ref: '#/components/schemas/stores_location_1'
-    body_10:
-      type: object
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-        brandId:
-          type: integer
-        lattitude:
-          type: number
-        longitude:
-          type: number
-        address:
-          type: string
-        postcode:
-          type: integer
-        regionId:
-          type: integer
-    body_11:
-      type: object
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-    body_7:
-      type: object
-      properties:
-        lattitude:
-          type: number
-        longitude:
-          type: number
-        name:
-          type: string
-    body_8:
-      type: object
-      properties:
-        lattitude:
-          type: number
-        longitude:
-          type: number
-        name:
-          type: string
-    body_5:
-      type: object
-      properties:
-        subcategory:
-          type: string
-    body_6:
-      type: object
-      properties:
-        subcategory:
-          type: string
-    inline_response_200_9:
-      type: object
-      properties:
-        brandId:
-          type: integer
-        name:
-          type: string
-        url:
-          type: string
-    inline_response_200_5:
-      type: object
-      properties:
-        name:
-          type: string
-        lattitude:
-          type: number
-        longitude:
-          type: number
-    inline_response_200_6:
-      type: object
-      properties:
-        name:
-          type: string
-        storeId:
-          type: integer
-        url:
-          type: string
-        brandName:
-          type: string
-        brandId:
-          type: integer
-        brandUrl:
-          type: string
-        location:
-          $ref: '#/components/schemas/stores_location'
-    inline_response_200_7:
-      type: object
-      properties:
-        name:
-          type: string
-        storeId:
-          type: integer
-        url:
-          type: string
-        brandName:
-          type: string
-        brandId:
-          type: integer
-        brandUrl:
-          type: string
-        location:
-          $ref: '#/components/schemas/stores_location'
-    body_14:
-      type: object
-      properties:
-        email:
-          type: string
-        firstname:
-          type: string
-        lastname:
-          type: string
-        password:
-          type: string
-    inline_response_200_8:
-      type: object
-      properties:
-        sku:
-          type: integer
-        name:
-          type: string
-        brand:
-          type: string
-        slug:
-          type: string
-        categoryId:
-          type: integer
-        subcategoryId:
-          type: integer
-        barcodes:
-          type: array
-          items:
-            type: string
-        price:
-          type: number
-        salePrice:
-          type: number
-        stock:
-          type: string
-        dateChecked:
-          type: string
-        internalSku:
-          type: string
-        totalCount:
-          type: integer
-    items_store:
-      type: object
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-        storeId:
-          type: integer
-        storeBrandId:
-          type: integer
-        storeBrandName:
-          type: string
-        price:
-          type: number
-        salePrice:
-          type: number
-        stock:
-          type: string
-        dateChecked:
-          type: string
-        internalSku:
-          type: string
-    items_category:
-      type: object
-      properties:
-        categoryId:
-          type: integer
-        category:
-          type: string
-        subcategoryId:
-          type: integer
-        suncategory:
-          type: string
-    inline_response_200_1:
-      type: object
-      properties:
-        name:
-          type: string
-        brand:
-          type: string
-        slug:
-          type: string
-        category:
-          $ref: '#/components/schemas/inline_response_200_1_category'
-        stdDrinks:
-          type: number
-        alcoholContent:
-          type: number
-        totalVolume:
-          type: integer
-        barcodes:
-          type: array
-          items:
-            type: string
-    inline_response_200_2:
-      type: object
-      properties:
-        categoryId:
-          type: integer
-        category:
-          type: string
-        subcategories:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemscategories_subcategories'
-    inline_response_201_1:
-      type: object
-      properties:
-        id:
-          type: integer
-    inline_response_200_3:
-      type: object
-      properties:
-        category:
-          type: string
-        subcategories:
-          type: array
-          items:
-            $ref: '#/components/schemas/itemscategories_subcategories'
-    inline_response_201_2:
-      type: object
-      properties:
-        storeId:
-          type: integer
-    inline_response_200_4:
-      type: object
-      properties:
-        regionId:
-          type: string
-        name:
-          type: string
-        lattitude:
-          type: number
-        longitude:
-          type: number
-    inline_response_201_3:
-      type: object
-      properties:
-        userId:
-          type: integer
-        authToken:
-          type: string
   securitySchemes:
-    bearerAuth:
+    bearerAuth:            # arbitrary name for the security scheme
       type: http
       scheme: bearer
-      bearerFormat: JWT
+      bearerFormat: JWT    
+security:
+  - bearerAuth: []
