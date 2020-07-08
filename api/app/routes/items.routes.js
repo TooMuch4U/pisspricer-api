@@ -1,4 +1,5 @@
 const items = require('../controllers/items.controller');
+const prices = require('../controllers/itemPrices.controller');
 const authenticate = require('../middleware/authenticate');
 
 module.exports = function(app) {
@@ -19,5 +20,13 @@ module.exports = function(app) {
 
     app.route(baseUrl + '/:sku/barcodes/:ean')
         .delete(authenticate.adminRequired, items.deleteBarcode);
+
+    app.route(baseUrl + '/:sku/stores')
+        .get(authenticate.setAuthenticatedUser, prices.getStores);
+
+    app.route(baseUrl + '/:sku/stores/:storeId')
+        .get(authenticate.adminRequired, prices.getOne)
+        .put(authenticate.adminRequired, prices.setPrice)
+        .delete(authenticate.adminRequired, prices.delete);
 
 };
