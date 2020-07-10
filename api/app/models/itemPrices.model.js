@@ -71,11 +71,15 @@ function generateSelectSql(sku, queryData, isAdmin) {
     // LIMIT and OFFSET
     if (typeof queryData.count !== 'undefined') {
         sql = sql + `LIMIT ?\n`;
-        data.push(queryData.count);
+        data.push(parseInt(queryData.count));
     }
     if (typeof queryData.index !== 'undefined') {
+        if (typeof queryData.count === 'undefined') {
+            sql += `LIMIT ?\n`;
+            data.push(1000000000);
+        }
         sql = sql + `OFFSET ?\n`;
-        data.push(queryData.count);
+        data.push(parseInt(queryData.index));
     }
 
     return {sql: sql, data: data};

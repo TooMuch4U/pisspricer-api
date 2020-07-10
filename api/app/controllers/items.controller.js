@@ -48,14 +48,27 @@ exports.create = async function (req, res) {
     }
 };
 exports.getAll = async function (req, res) {
+    const rules = {
+        "order": "string",
+        "index":     "integer",
+        "count": "integer|min:1",
+        "search": "string",
+        "catId": "array",
+        "ean": "string",
+        "regionId": "integer",
+        "lat":   "required_with:lng,r|numeric",
+        "lng":   "required_with:r|numeric",
+        "r":     "required_with:lat|numeric"
+    };
     try {
-        let items;
-        if (req.userPermission < 5) {
-            items = await Items.getAll();
+        let [isPass, error] = tools.validate(req.params, rules);
+        if (!isPass) {
+            res.statusMessage = error;
+            res.status(400).send();
+            return;
         }
-        else {
-            items = await Items.getAllAdmin();
-        }
+
+        let items = await Items.getAll(req.query);
         res.status(200).json(items)
     }
     catch (err) {

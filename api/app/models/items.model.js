@@ -26,18 +26,127 @@ exports.insert = async function (itemData, barcodeData) {
         conn.release();
     }
 };
-exports.getAll = async function () {
-    const sql = `SELECT I.*, 
-                        C.name as category,
-                        S.name as subcategory
-                 FROM item I 
+function buildSelectSql (query) {
+
+    // --- SELECT ---
+    let data = [];
+    let select = `SELECT MIN(IF(P.price > P.sale_price, P.sale_price, P.price)) as best_price,
+                      C.name as category,
+                      SC.name as subcategory,
+                      I.*,
+                      count(*) as store_count\n`;
+
+    // --- FROM ---
+    let from = `FROM  location_stocks_item P
+                      LEFT JOIN item I ON P.sku = I.sku
                       LEFT JOIN category C ON I.category_id = C.category_id
-                      LEFT JOIN subcategory S ON I.subcategory_id = S.subcategory_id
-                 GROUP BY I.sku`;
+                      LEFT JOIN subcategory SC ON I.subcategory_id = SC.subcategory_id\n`;
+
+    // --- WHERE ---
+    let whereArray = [];
+    let where = ``;
+    // Barcode search
+    if (typeof query.ean !== 'undefined') {
+        whereArray.push(`I.sku = (SELECT sku FROM item_barcode WHERE ean = ?)`);
+        data.push(query.ean);
+    }
+    // Category filter
+    if (typeof query.catId !== 'undefined') {
+        let catArray = [];
+        for (let i = 0; i < query.catId.length; i++) {
+            catArray.push(`I.category_id = ?`);
+            data.push(query.catId[i]);
+        }
+        whereArray.push(`(` + catArray.join(` OR `) + `)`)
+    }
+    // Distance filter
+    if (typeof query.lat !== 'undefined') {
+        whereArray.push(`P.store_loc_id in (SELECT store_loc_id 
+                                            FROM location WHERE ST_Distance_Sphere(point(longitude, lattitude), point(?, ?))/1000 <= ? )`);
+        data.push(query.lng);
+        data.push(query.lat);
+        data.push(query.r);
+    }
+    // Search filter
+    if (typeof query.search !== 'undefined') {
+        whereArray.push(`I.name like ?`);
+        data.push(`%${query.search}%`);
+    }
+    // Region
+    if (typeof query.regionId !== 'undefined') {
+        whereArray.push(`P.store_loc_id in (SELECT store_loc_id FROM location WHERE region_id = ?)`);
+        data.push(query.regionId);
+    }
+    // Compile where
+    if (whereArray.length !== 0) {
+        where = `WHERE ` + whereArray.join(` AND `);
+        where += `\n`;
+    }
+
+    // --- GROUP BY ---
+    let group = `GROUP BY I.sku\n`;
+
+    // -- ORDER BY ---
+    let order = `ORDER BY `;
+    switch (query.order) {
+        case 'price-asc':
+            order += `P.best_price ASC`;
+            break;
+        case 'price-desc':
+            order += `P.best_price DESC`;
+            break;
+        case 'alpha-asc':
+            order += `I.name ASC`;
+            break;
+        case 'alpha-desc':
+            order += `I.name DESC`;
+            break;
+        case 'best-match':
+        default:
+            order += `CASE WHEN I.name LIKE ? THEN 1
+                           WHEN I.name LIKE ? THEN 3
+                           ELSE 2
+                      END`;
+            data.push(`${query.search}%`);
+            data.push(`%${query.search}`);
+    }
+    order += `\n`;
+
+    // --- LIMIT & OFFSET ---
+    let limit = ``;
+    if (typeof query.count !== 'undefined') {
+        limit += `LIMIT ?\n`;
+        data.push(parseInt(query.count));
+    }
+    if (typeof query.index !== 'undefined') {
+        if (typeof query.count === 'undefined') {
+            limit += `LIMIT ?\n`;
+            data.push(1000000000);
+        }
+        limit += `OFFSET ?\n`;
+        data.push(parseInt(query.index));
+    }
+
+    let sql = select + from + where + group + order + limit;
+
+    return {sql, data, where, from, group, order}
+};
+exports.getAll = async function (queryData, isAdmin) {
 
     try {
-        const rows = await db.getPool().query(sql);
-        return tools.toCamelCase(rows)
+        const query = buildSelectSql(queryData, isAdmin);
+        const countSql = `SELECT count(distinct P.sku) as totalCount\n` + query.from + query.where;
+        const countRows = await db.getPool().query(countSql, query.data);
+        const totalCount = countRows.length < 1 ? null : countRows[0].totalCount;
+        if (totalCount == null) {
+            throw Error(`totalCount should have at least one row`);
+        }
+        const rows = await db.getPool().query(query.sql, query.data);
+        return {
+            totalCount,
+            "count": rows.length,
+            "items": tools.toCamelCase(rows)
+        }
     }
     catch (err) {
         tools.logSqlError(err);
