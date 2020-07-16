@@ -29,4 +29,6 @@ module.exports = function(app) {
         .put(authenticate.adminRequired, prices.setPrice)
         .delete(authenticate.adminRequired, prices.delete);
 
+    app.route(baseUrl + '/:sku/image')
+        .put(authenticate.adminRequired, items.setImage);
 };

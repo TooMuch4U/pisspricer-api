@@ -1,6 +1,7 @@
 const Items = require('../models/items.model');
 const Categories = require('../models/categories.model');
 const Subcategories = require('../models/subcategories.model');
+const Images = require('../models/images.model');
 const Locations = require('../models/locations.model');
 const passwords = require('../services/passwords');
 const tools = require('../services/tools');
@@ -250,6 +251,34 @@ exports.addBarcode = async function (req, res) {
 
         await Items.insertBarcode(req.params.sku, req.body.barcode);
         res.status(200).send()
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+
+exports.setImage = async function (req, res) {
+    try {
+        const sku = req.params.sku;
+        const item = await Items.getBySku(sku);
+        if (item == null) {
+            res.statusMessage = `Not Found`;
+            res.status(404).send();
+            return;
+        }
+
+        if (req.body.length === undefined) {
+            res.statusMessage = 'Bad request: empty image';
+            res.status(400).send();
+            return;
+        }
+
+        const path = `items/`;
+        const blob = {"originalname":item.sku, "buffer": req.body};
+        await Images.uploadImage(blob, path);
+        res.status(200).send()
+
     }
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}
