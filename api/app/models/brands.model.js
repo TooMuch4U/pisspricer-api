@@ -32,7 +32,8 @@ exports.insert = async function (brand) {
 exports.getById = async function (brandId) {
     const sql = `SELECT store_id as brand_id,
                         name,
-                        url
+                        url,
+                        has_image
                  FROM store
                  WHERE store_id = ?`;
     try {
@@ -84,4 +85,20 @@ exports.deleteById = async function (brandId) {
         tools.logSqlError(err);
         throw (err);
     }
+};
+
+exports.setImage = async function (storeId, hasImage) {
+    const sql = `UPDATE store SET has_image = ? WHERE store_id = ?`;
+    let result;
+    try {
+        result = await db.getPool().query(sql, [hasImage, storeId]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+    if (result.affectedRows !== 1) {
+        throw Error(`Should be 1 row changed but there was actually: ${result.changedRows}`);
+    }
+    return;
 };

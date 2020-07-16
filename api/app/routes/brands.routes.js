@@ -11,4 +11,7 @@ module.exports = function(app) {
         .get(brands.getOne)
         .patch(authenticate.adminRequired, brands.update)
         .delete(authenticate.adminRequired, brands.delete);
+
+    app.route(baseUrl + '/:brandId/image')
+        .put(authenticate.adminRequired, brands.setImage);
 };

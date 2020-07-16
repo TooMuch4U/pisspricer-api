@@ -1,6 +1,7 @@
 const Brands = require('../models/brands.model');
 const passwords = require('../services/passwords');
 const tools = require('../services/tools');
+const Images = require('../models/images.model');
 
 exports.getAll = async function (req, res) {
     try {
@@ -91,5 +92,39 @@ exports.delete = async function (req, res) {
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}
         res.status(500).send();
+    }
+};
+
+exports.setImage = async function (req, res) {
+    try {
+        const brandId = req.params.brandId;
+        const brand = await Brands.getById(brandId);
+
+        if (brand == null) {
+            res.statusMessage = 'Not Found';
+            res.status(404).send();
+            return;
+        }
+
+        if (req.body.length === undefined) {
+            res.statusMessage = 'Bad request: empty image';
+            res.status(400).send();
+            return;
+        }
+
+        const path = `brands/`;
+        const blob = {"originalname": brand.brandId, "buffer": req.body};
+        await Images.uploadImage(blob, path);
+        if (brand.hasImage != 1) {
+            await Brands.setImage(brandId, 1);
+            res.status(201).send()
+        }
+        else {
+            res.status(200).send()
+        }
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
     }
 };
