@@ -7,7 +7,7 @@ paths:
   /items:
     get:
       summary: "Get all items"
-      description: "Permission required to see: barcodeCount, internalSku"
+      description: "Permission required to see: barcodeCount, internalSku. Orders: price-asc, price-desc, best-match, alpha-asc, alpha-desc"
       tags:
         - Items
       security: []
@@ -23,19 +23,21 @@ paths:
             type: integer
           description: "Number of results to display"
         - in: query
-          name: startIndex
+          name: index
           schema:
             type: integer
           description: "Index to start count from"
         - in: query
-          name: sort
+          name: order
           schema:
             type: string
           description: "Sort order"
         - in: query
           name: catId
           schema:
-            type: integer
+            type: array
+            items:
+              type: integer
           description: "Category to filter"
         - in: query
           name: ean
@@ -62,6 +64,7 @@ paths:
           schema:
             type: integer
           description: "Radius to search"
+        
       responses:
         '200':
           description: OK
@@ -95,8 +98,6 @@ paths:
                           type: integer
                         subcategory:
                           type: string
-                        barcodeCount:
-                          type: integer
                         stdDrinks:
                           type: number
                         alcoholContent:
@@ -105,26 +106,8 @@ paths:
                           type: integer
                         storeCount:
                           type: integer
-                        storeName:
-                          type: string
-                        storeUrl:
-                          type: string
-                        storeId:
-                          type: integer
-                        storeBrandId:
-                          type: integer
-                        storeBrandName:
-                          type: string
-                        price:
+                        bestPrice:
                           type: number
-                        salePrice:
-                          type: number
-                        stock:
-                          type: string
-                        dateChecked:
-                          type: string
-                        internalSku:
-                          type: string
         '400':
           description: Bad Request
         '500':
@@ -385,7 +368,64 @@ paths:
           description: Not Found
         '500':
           description: Server Error
-          
+  
+  /items/{sku}/image:
+    parameters:
+        - in: path
+          name: sku
+          schema:
+            type: integer
+          required: true
+          description: Sku of item
+    
+    put:
+      description: Set item photo
+      tags:
+        - Images
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Ok Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  
+  /brand/{brandId}/image:
+    parameters:
+      - in: path
+        name: brandId
+        schema:
+          type: integer
+        required: true
+        
+    put:
+      description: Set brand photo
+      tags:
+        - Images
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Ok Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  
   /items/{sku}/stores:
     parameters:
         - in: path
