@@ -280,3 +280,20 @@ exports.insertBarcode = async function (sku, ean) {
         throw Error(`Should be 1 row inserted, there was actually: ${result.changedRows}`);
     }
 };
+
+exports.setImage = async function (sku, hasImage) {
+    const sql = `UPDATE item SET has_image = ? WHERE sku = ?`;
+    let result;
+    try {
+        result = await db.getPool().query(sql, [hasImage, sku]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+    if (result.affectedRows !== 1) {
+        throw Error(`Should be 1 row changed but there was actually: ${result.changedRows}`);
+    }
+    return;
+}
+;

@@ -275,9 +275,16 @@ exports.setImage = async function (req, res) {
         }
 
         const path = `items/`;
-        const blob = {"originalname":item.sku, "buffer": req.body};
+        const blob = {"originalname": item.sku, "buffer": req.body};
         await Images.uploadImage(blob, path);
-        res.status(200).send()
+        if (item.hasImage != 1) {
+            await Items.setImage(sku, 1);
+            res.status(201).send();
+        }
+        else {
+            res.status(200).send()
+        }
+
 
     }
     catch (err) {
