@@ -5,9 +5,9 @@ const randtoken = require('rand-token');
 
 exports.insert = async function (storeData) {
     const sql = `INSERT INTO store_location
-                 (name, url, store_id) VALUES (?, ?, ?)`;
+                 (name, url, store_id, internal_id) VALUES (?, ?, ?, ?)`;
     try {
-        let result = await db.getPool().query(sql, [storeData.name, storeData.url, storeData.brandId]);
+        let result = await db.getPool().query(sql, [storeData.name, storeData.url, storeData.brandId, storeData.internalId]);
         return result.insertId;
     }
     catch (err) {
@@ -19,6 +19,7 @@ exports.getAll = async function () {
     const sql = `SELECT SL.store_loc_id as store_id,
                         SL.url, 
                         SL.name,
+                        SL.internal_id,
                         S.store_id as brand_id,
                         S.name as brand_name,
                         S.url as brand_url,
@@ -47,6 +48,7 @@ exports.getOne = async function (storeId) {
     const sql = `SELECT SL.store_loc_id as store_id,
                         SL.url, 
                         SL.name,
+                        Sl.internal_id,
                         S.store_id as brand_id,
                         S.name as brand_name,
                         S.url as brand_url,
