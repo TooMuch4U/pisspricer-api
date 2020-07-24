@@ -14,7 +14,8 @@ exports.create = async function (req, res) {
         longitude: "required_with:regionId|numeric",
         regionId: "required_with:address|integer",
         address: "required_with:postcode|string",
-        postcode: "required_with:lattitude|numeric"
+        postcode: "required_with:lattitude|numeric",
+        internalId: "string"
     };
     try {
         let [isPass, error] = tools.validate(req.body, rules);
