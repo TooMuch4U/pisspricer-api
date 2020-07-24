@@ -56,7 +56,7 @@ exports.create = async function (req, res) {
 };
 exports.getAll = async function (req, res) {
     try {
-        const stores = await Stores.getAll();
+        const stores = await Stores.getAll(req.query);
         res.status(200).json(stores);
     }
     catch (err) {
