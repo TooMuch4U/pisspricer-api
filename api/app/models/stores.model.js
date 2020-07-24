@@ -15,8 +15,8 @@ exports.insert = async function (storeData) {
         throw(err)
     }
 };
-exports.getAll = async function () {
-    const sql = `SELECT SL.store_loc_id as store_id,
+exports.getAll = async function (query) {
+    let sql = `SELECT SL.store_loc_id as store_id,
                         SL.url, 
                         SL.name,
                         SL.internal_id,
@@ -35,8 +35,13 @@ exports.getAll = async function () {
                       LEFT JOIN location L ON SL.store_loc_id = L.store_loc_id
                       LEFT JOIN region R ON L.region_id = R.region_id
                       `;
+    let data = [];
+    if (typeof query.brandId !== 'undefined') {
+        sql += `\n WHERE SL.store_id = ?`;
+        data.push(query.brandId);
+    }
     try {
-        const rows = await db.getPool().query(sql);
+        const rows = await db.getPool().query(sql, data);
         return tools.toCamelCase(rows);
     }
     catch (err) {
