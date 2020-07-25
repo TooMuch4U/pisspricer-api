@@ -8,8 +8,8 @@ const tools = require('../services/tools');
 exports.create = async function (req, res) {
     const rules = {
         "name": "required|string",
-        "lattitude": "required|numeric",
-        "longitude": "required|numeric"
+        "lattitude": "numeric",
+        "longitude": "numeric"
     };
     try {
         const [pass, error] = tools.validate(req.body, rules);
