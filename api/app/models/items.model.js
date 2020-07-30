@@ -295,5 +295,17 @@ exports.setImage = async function (sku, hasImage) {
         throw Error(`Should be 1 row changed but there was actually: ${result.changedRows}`);
     }
     return;
-}
-;
+};
+
+exports.allBarcodes = async function () {
+    const sql = `SELECT * 
+                 FROM item_barcode`;
+    try {
+        const rows = await db.getPool().query(sql);
+        return tools.toCamelCase(rows)
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err);
+    }
+};

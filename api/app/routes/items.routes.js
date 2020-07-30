@@ -31,4 +31,7 @@ module.exports = function(app) {
 
     app.route(baseUrl + '/:sku/image')
         .put(authenticate.adminRequired, items.setImage);
+
+    app.route(app.rootUrl + "/barcodes")
+        .get(authenticate.adminRequired, items.getBarcodes);
 };

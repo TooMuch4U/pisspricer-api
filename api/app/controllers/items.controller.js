@@ -292,3 +292,26 @@ exports.setImage = async function (req, res) {
         res.status(500).send()
     }
 };
+
+exports.getBarcodes = async function(req, res) {
+    try {
+        const barcodes = await Items.allBarcodes();
+        let barcode_obj = {};
+        for (let i = 0; i < barcodes.length; i++) {
+            let barcode = barcodes[i].ean;
+            let sku = barcodes[i].sku;
+            if (typeof barcode_obj[barcode] == 'undefined') {
+                barcode_obj[barcode] = [sku]
+            }
+            else {
+                barcode_obj[barcode] = barcode_obj[barcode].push(sku)
+            }
+        }
+
+        res.status(200).json(barcode_obj)
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
