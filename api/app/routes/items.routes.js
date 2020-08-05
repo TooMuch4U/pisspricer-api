@@ -34,4 +34,7 @@ module.exports = function(app) {
 
     app.route(app.rootUrl + "/barcodes")
         .get(authenticate.adminRequired, items.getBarcodes);
+
+    app.route(app.rootUrl + "/allitems")
+        .get(authenticate.adminRequired, items.getAllNoPrice)
 };

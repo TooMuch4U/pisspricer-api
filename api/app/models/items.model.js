@@ -3,13 +3,13 @@ const passwords = require('../services/passwords');
 const tools = require('../services/tools');
 const randtoken = require('rand-token');
 
-exports.insert = async function (itemData, barcodeData) {
+exports.insert = async function (itemData, barcodeData, slugName) {
     const conn = await db.getPool().getConnection();
     await conn.beginTransaction();
-    const sqlItem = `INSERT INTO item SET ?`;
+    const sqlItem = `INSERT INTO item SET ?, slug = slugify(?)`;
     const sqlBarcode = `INSERT INTO item_barcode SET ?, ?;`;
     try {
-        let result1 = await conn.query(sqlItem, [itemData]);
+        let result1 = await conn.query(sqlItem, [itemData, slugName]);
         let sku = result1.insertId;
         if (barcodeData.ean != null) {
             let result2 = await conn.query(sqlBarcode, [{sku}, barcodeData]);
@@ -307,5 +307,17 @@ exports.allBarcodes = async function () {
     catch (err) {
         tools.logSqlError(err);
         throw (err);
+    }
+};
+
+exports.getAllBasic = async function() {
+    const sql = `SELECT * FROM item`;
+    try {
+        const rows = await db.getPool().query(sql);
+        return tools.toCamelCase(rows)
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
     }
 };

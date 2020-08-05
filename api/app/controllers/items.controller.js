@@ -12,7 +12,6 @@ exports.create = async function (req, res) {
         "brand": "string",
         "categoryId": "integer",
         "subcategoryId": "required_with:categoryId|integer",
-        "slug": "string",
         "stdDrinks": "numeric",
         "alcoholContent": "numeric",
         "volumeTotal": "integer",
@@ -38,7 +37,8 @@ exports.create = async function (req, res) {
             else {
                 let barcodeData = { "ean": req.body.barcode };
                 delete req.body.barcode;
-                let sku = await Items.insert(tools.toUnderscoreCase(req.body), barcodeData);
+                let slugName = req.body.name + (typeof req.body.volumeTotal == 'undefined' ? '' : req.body.volumeTotal);
+                let sku = await Items.insert(tools.toUnderscoreCase(req.body), barcodeData, slugName);
                 res.status(201).json({sku})
             }
         }
@@ -309,6 +309,17 @@ exports.getBarcodes = async function(req, res) {
         }
 
         res.status(200).json(barcode_obj)
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+
+exports.getAllNoPrice = async function(req, res) {
+    try {
+        const items = await Items.getAllBasic();
+        res.status(200).json(items)
     }
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}
