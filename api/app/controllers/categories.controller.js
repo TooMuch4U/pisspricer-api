@@ -7,7 +7,7 @@ const tools = require('../services/tools');
 
 exports.getAll = async function (req, res) {
     try {
-        const categories = await Categories.getAll();
+        const categories = await Categories.getAllWithSubs();
         res.status(200).json(categories)
     }
     catch (err) {

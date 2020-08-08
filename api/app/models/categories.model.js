@@ -15,6 +15,44 @@ exports.getAll = async function () {
         throw (err)
     }
 };
+
+exports.getAllWithSubs = async function () {
+    const sql = `SELECT c.category_id, c.name as category, s.name as subcategory, s.subcategory_id 
+                 FROM subcategory s
+                      LEFT JOIN category c ON s.parent_id = c.category_id
+                 UNION ALL
+                 SELECT c.category_id, c.name as category, s.name as subcategory, s.subcategory_id 
+                 FROM subcategory s
+                      RIGHT JOIN category c ON s.parent_id = c.category_id
+                 WHERE s.subcategory_id IS NULL`;
+    let rows;
+    try {
+        rows = await db.getPool().query(sql);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+
+    let cats = {};
+    for (let i = 0; i < rows.length; i++) {
+        if (typeof cats[rows[i].category] == 'undefined') {
+            cats[rows[i].category] = {
+                "category": rows[i].category,
+                "categoryId": rows[i].category_id,
+                "subcategories": []
+            };
+        }
+        if (rows[i].subcategory_id != null) {
+            cats[rows[i].category].subcategories.push({
+                "subcategoryId": rows[i].subcategory_id,
+                "subcategory": rows[i].subcategory
+            })
+        }
+    }
+    return cats
+};
+
 exports.getByName = async function (name) {
     const sql = `SELECT category_id, name as category
                  FROM category

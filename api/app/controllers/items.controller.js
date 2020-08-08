@@ -10,8 +10,8 @@ exports.create = async function (req, res) {
     const rules = {
         "name": "required|string",
         "brand": "string",
-        "categoryId": "integer",
-        "subcategoryId": "required_with:categoryId|integer",
+        "categoryId": "required_with:subcategoryId|integer",
+        "subcategoryId": "integer",
         "stdDrinks": "numeric",
         "alcoholContent": "numeric",
         "volumeTotal": "integer",
@@ -38,7 +38,8 @@ exports.create = async function (req, res) {
                 let barcodeData = { "ean": req.body.barcode };
                 delete req.body.barcode;
                 let slugName = req.body.name + (typeof req.body.volumeTotal == 'undefined' ? '' : req.body.volumeTotal);
-                let sku = await Items.insert(tools.toUnderscoreCase(req.body), barcodeData, slugName);
+                let data = tools.onlyInclude(req.body, Object.keys(rules));
+                let sku = await Items.insert(tools.toUnderscoreCase(data), barcodeData, slugName);
                 res.status(201).json({sku})
             }
         }
