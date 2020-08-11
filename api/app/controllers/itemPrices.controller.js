@@ -19,7 +19,7 @@ exports.getStores = async function (req, res) {
         const sku = req.params.sku;
         const isAdmin = req.userPermission >= 5;
 
-        // Check if item exists
+        // Check if item exist
         const item = await Items.getBySku(sku);
         if (item == null) {
             res.statusMessage = "Not Found";
@@ -73,7 +73,7 @@ exports.setPrice = async function (req, res) {
 
         // Check if price exists
         const price = await Prices.getOne(sku, storeId);
-        if (price == null) {
+        if (price === null) {
             await Prices.insert(sku, storeId, req.body);
             res.status(201).send();
         }

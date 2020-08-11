@@ -27,3 +27,5 @@ exports.uploadImage = (file, folderPath) => new Promise((resolve, reject) => {
         })
         .end(buffer)
 });
+
+// TODO Add delete method, then add to delete items and brands methods
