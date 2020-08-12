@@ -71,14 +71,11 @@ exports.setPrice = async function (req, res) {
             return;
         }
 
-        // Check if price exists
-        const price = await Prices.getOne(sku, storeId);
-        if (price === null) {
-            await Prices.insert(sku, storeId, req.body);
+        // Insert price
+        const isNew = await Prices.insertOrSetPrice(sku, storeId, req.body);
+        if (isNew) {
             res.status(201).send();
-        }
-        else {
-            await Prices.setPrice(sku, storeId, req.body);
+        } else {
             res.status(200).send();
         }
     }

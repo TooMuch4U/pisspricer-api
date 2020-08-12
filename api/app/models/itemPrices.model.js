@@ -226,3 +226,98 @@ exports.delete = async function (sku, storeId) {
         throw Error(`Should be one row deleted, but there was actually: ${result.changedRows}`);
     }
 };
+
+exports.insertOrSetPrice = async function (sku, storeId, priceData) {
+    const conn = await db.getPool().getConnection();
+    await conn.beginTransaction();
+    const sqlInsert = `INSERT INTO location_stocks_item SET 
+                            sku = ?, 
+                            store_loc_id = ?, 
+                            internal_sku = ?,
+                            last_check = ?,
+                            price = ?,
+                            sale_price = ?,
+                            stock = ?,
+                            url = ?`;
+    const sqlUpdate = `UPDATE location_stocks_item SET 
+                            internal_sku = ?,
+                            last_check = ?,
+                            price = ?,
+                            sale_price = ?,
+                            stock = ?,
+                            url = ?
+                       WHERE  sku = ? AND 
+                            store_loc_id = ?`;
+    const sqlGetOne = `SELECT P.store_loc_id as store_id,
+                        P.url,
+                        S.name as store_name,
+                        S.store_id as brand_id,
+                        B.name as brand_name,
+                        P.price,
+                        P.sale_price,
+                        P.stock,
+                        P.last_check as date_checked,
+                        P.internal_sku
+                        
+                  FROM            location_stocks_item P
+                        LEFT JOIN store_location S ON P.store_loc_id = S.store_loc_id
+                        LEFT JOIN store B ON S.store_id = B.store_id
+                  
+                  WHERE P.sku = ? AND P.store_loc_id = ?`;
+    let isNew = false;
+    try {
+
+        let itemPriceList = await conn.query(sqlGetOne, [sku, storeId]);
+        let response;
+        if (itemPriceList.length === 0) {
+            const data = [
+                sku,
+                storeId,
+                priceData.internalSku,
+                new Date(),
+                priceData.price,
+                priceData.salePrice,
+                priceData.stock,
+                priceData.url
+            ];
+            isNew = true;
+            response = await conn.query(sqlInsert, data);
+        } else {
+            const data = [
+                priceData.internalSku,
+                new Date(),
+                priceData.price,
+                priceData.salePrice,
+                priceData.stock,
+                priceData.url,
+                sku,
+                storeId
+            ];
+            response = await conn.query(sqlUpdate, data);
+        }
+
+        if (response.affectedRows !== 1) {
+            throw new CustomError(`Rows changed should be 1, but was actually ${response.affectedRows}.`);
+        }
+
+        await conn.commit();
+        return isNew;
+    }
+    catch (err) {
+        await conn.rollback();
+        if (!( err instanceof CustomError)) {
+            tools.logSqlError(err);
+        }
+        throw (err)
+    }
+    finally {
+        conn.release();
+    }
+};
+
+class CustomError extends Error {
+    constructor(...params) {
+        // Pass remaining arguments (including vendor specific ones) to parent constructor
+        super(...params);
+    }
+}
