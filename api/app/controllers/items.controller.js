@@ -4,6 +4,7 @@ const Subcategories = require('../models/subcategories.model');
 const Images = require('../models/images.model');
 const Locations = require('../models/locations.model');
 const passwords = require('../services/passwords');
+const Brands = require('../models/brands.model');
 const tools = require('../services/tools');
 
 exports.create = async function (req, res) {
@@ -321,6 +322,23 @@ exports.getAllNoPrice = async function(req, res) {
     try {
         const items = await Items.getAllBasic();
         res.status(200).json(items)
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+
+exports.getAllInternalIds = async function(req, res) {
+    try {
+        if (typeof req.query.brandId === 'undefined') {
+            res.statusMessage = "Field brandId not defined";
+            res.status(400).send();
+            return;
+        }
+        let brandId = req.query.brandId;
+        let internalIds = await Items.getInternalIds(brandId);
+        res.status(200).json(internalIds);
     }
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}

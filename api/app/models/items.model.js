@@ -90,10 +90,10 @@ function buildSelectSql (query) {
     let order = `ORDER BY `;
     switch (query.order) {
         case 'price-asc':
-            order += `P.best_price ASC`;
+            order += `best_price ASC`;
             break;
         case 'price-desc':
-            order += `P.best_price DESC`;
+            order += `best_price DESC`;
             break;
         case 'alpha-asc':
             order += `I.name ASC`;
@@ -320,4 +320,32 @@ exports.getAllBasic = async function() {
         tools.logSqlError(err);
         throw (err)
     }
+};
+
+exports.getInternalIds = async function(brandId) {
+    const sql = `SELECT internal_sku as internalSku, sku 
+                          FROM location_stocks_item I
+                            LEFT JOIN store_location S ON I.store_loc_id = S.store_loc_id
+                          WHERE store_id = ?
+                          ORDER BY internal_sku`;
+    let rows;
+    try {
+        rows = await db.getPool().query(sql, [brandId]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+    let ids = {};
+    for (let i = 0; rows.length > i; i++) {
+        let row = rows[i];
+        let id = row.internalSku;
+        if (typeof ids[id] === 'undefined') {
+            ids[id] = [];
+        }
+        if (!ids[id].includes(row.sku)) {
+            ids[id].push(row.sku);
+        }
+    }
+    return ids;
 };
