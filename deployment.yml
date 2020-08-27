@@ -1,26 +1,41 @@
-apiVersion: apps/v1beta1
-kind: Deployment
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
 metadata:
-  name: api
+  name: "api"
+  namespace: "default"
+  labels:
+    app: "api"
 spec:
-  replicas: 1
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "api"
   template:
     metadata:
       labels:
-        app: api
+        app: "api"
     spec:
       containers:
-      - name: api
+      - name: "api-sha256-1"
         image: gcr.io/PROJECT_ID/IMAGE:TAG
-        ports:
-        - containerPort: 5000
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 100m
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "api-hpa-cmic"
+  namespace: "default"
+  labels:
+    app: "api"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "api"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
