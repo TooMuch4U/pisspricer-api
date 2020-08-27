@@ -5,19 +5,18 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json /usr/src/app/
+COPY package.json /usr/src/app/api/
 RUN apk add --no-cache make gcc g++ python && \
   npm install --production --silent && \
   apk del make gcc g++ python
 # Bundle app source
-COPY . /usr/src/app
+COPY . /usr/src/app/api
 
 
 FROM node:12.16.1-alpine3.10
 
-WORKDIR /usr/app
+WORKDIR /usr/app/api
 COPY --from=build /usr/src/app .
 
 EXPOSE 4941
-CMD [ "cd", "api" ]
 CMD [ "npm", "start" ]
