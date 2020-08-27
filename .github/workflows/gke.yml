@@ -23,7 +23,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: api    # TODO: update to cluster name
   GKE_ZONE: australia-southeast1-a   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: nginx-1 # TODO: update to deployment name
+  DEPLOYMENT_NAME: api # TODO: update to deployment name
   IMAGE: api
 
 jobs:
