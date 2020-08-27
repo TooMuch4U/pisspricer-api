@@ -23,7 +23,7 @@ exports.create = async function (req, res) {
         }
     }
     catch (err) {
-        if (!err.hasBeenLogged) {console.log(err)};
+        if (!err.hasBeenLogged) {console.log(err)}
         res.status(500).send()
     }
 };

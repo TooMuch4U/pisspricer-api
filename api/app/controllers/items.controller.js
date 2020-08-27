@@ -306,8 +306,11 @@ exports.getBarcodes = async function(req, res) {
                 barcode_obj[barcode] = [sku]
             }
             else {
-                barcode_obj[barcode] = barcode_obj[barcode].push(sku)
+                let list = barcode_obj[barcode];
+                list.push(sku);
+                console.log("a")
             }
+            console.log(barcode_obj[barcode])
         }
 
         res.status(200).json(barcode_obj)
