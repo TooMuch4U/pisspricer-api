@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: nginx-1
+  name: api
 spec:
   replicas: 1
   strategy:
