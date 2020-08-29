@@ -11,7 +11,7 @@ spec:
   minReadySeconds: 5
   selector:
       matchLabels:
-        name: api
+        app: api
   template:
     metadata:
       labels:
