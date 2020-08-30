@@ -3,7 +3,7 @@ const db = require('./config/db');
 const express = require('./config/express');
 
 const app = express();
-const port = 4941;
+const port = process.env.OPEN_PORT || 8080;
 
 // Test connection to MySQL on start-up
 async function testDbConnection() {
