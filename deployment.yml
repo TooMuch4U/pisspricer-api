@@ -29,16 +29,16 @@ spec:
             cpu: 100m
         env:
           - name: BUCKET_KEY
-            value: ${{ secrets.BUCKET_KEY }}
+            value: BKT_KEY
           - name: IMAGE_BUCKET
-            value: ${{ secrets.IMAGE_BUCKET }}
+            value: IMG_BUCKET
           - name: MYSQL_DATABASE
-            value: ${{ secrets.MYSQL_DATABASE }}
+            value: MYSQL_DB
           - name: MYSQL_PORT
-            value: ${{ secrets.MYSQL_PORT }}
+            value: MYSQL_PORTNO
           - name: MYSQL_HOST
-            value: ${{ secrets.MYSQL_HOST }}
+            value: MYSQL_HOST_IP
           - name: MYSQL_PASSWORD
-            value: ${{ secrets.MYSQL_PASSWORD }}
+            value: MYSQL_PWORD
           - name: MYSQL_USER
-            value: ${{ secrets.MYSQL_USER }}
+            value: MYSQL_USR

@@ -25,6 +25,13 @@ env:
   GKE_ZONE: australia-southeast1-a   # TODO: update to cluster zone
   DEPLOYMENT_NAME: api # TODO: update to deployment name
   IMAGE: api
+  BKT_KEY: ${{ secrets.BUCKET_KEY }}
+  IMG_BUCKET: ${{ secrets.IMAGE_BUCKET }}
+  MYSQL_DB: ${{ secrets.MYSQL_DATABASE }}
+  MYSQL_PORTNO: ${{ secrets.MYSQL_PORT }}
+  MYSQL_HOST_IP: ${{ secrets.MYSQL_HOST }}
+  MYSQL_PWORD: ${{ secrets.MYSQL_PASSWORD }}
+  MYSQL_USR: ${{ secrets.MYSQL_USER }}:  
 
 jobs:
   setup-build-publish-deploy:
