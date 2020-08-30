@@ -54,12 +54,6 @@ spec:
                 name: env-vars
                 key: mysql-host
           - name: MYSQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: env-vars
-                key: mysql-password
+            value: zltKh0JemhDeMG2L
           - name: MYSQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: env-vars
-                key: mysql-user
+            value: root
