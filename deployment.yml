@@ -27,3 +27,18 @@ spec:
             cpu: 100m
           limits:
             cpu: 100m
+        env:
+          - name: BUCKET_KEY
+            value: ${{ secrets.BUCKET_KEY }}
+          - name: IMAGE_BUCKET
+            value: ${{ secrets.IMAGE_BUCKET }}
+          - name: MYSQL_DATABASE
+            value: ${{ secrets.MYSQL_DATABASE }}
+          - name: MYSQL_PORT
+            value: ${{ secrets.MYSQL_PORT }}
+          - name: MYSQL_HOST
+            value: ${{ secrets.MYSQL_HOST }}
+          - name: MYSQL_PASSWORD
+            value: ${{ secrets.MYSQL_PASSWORD }}
+          - name: MYSQL_USER
+            value: ${{ secrets.MYSQL_USER }}
