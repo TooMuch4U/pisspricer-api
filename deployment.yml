@@ -29,19 +29,37 @@ spec:
             cpu: 100m
         env:
           - name: BUCKET_KEY
-            value: BKT_KEY
-          - name: IMAGE_BUCKET
-            value: IMG_BUCKET
-          - name: MYSQL_DATABASE
-            value: MYSQL_DB
-          - name: SECRET_USERNAME
             valueFrom:
               secretKeyRef:
                 name: env-vars
-                key: mysql-poort
+                key: bucket-key
+          - name: IMAGE_BUCKET
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: image-bucket
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: mysql-db
+          - name: MYSQL_PORT
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: mysql-port
           - name: MYSQL_HOST
-            value: MYSQL_HOST_IP
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: mysql-host
           - name: MYSQL_PASSWORD
-            value: MYSQL_PWORD
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: mysql-password
           - name: MYSQL_USER
-            value: MYSQL_USR
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: mysql-user
