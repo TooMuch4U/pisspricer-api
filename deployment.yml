@@ -34,8 +34,11 @@ spec:
             value: IMG_BUCKET
           - name: MYSQL_DATABASE
             value: MYSQL_DB
-          - name: MYSQL_PORT
-            value: MYSQL_PORTNO
+          - name: SECRET_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: env-vars
+                key: mysql-poort
           - name: MYSQL_HOST
             value: MYSQL_HOST_IP
           - name: MYSQL_PASSWORD
