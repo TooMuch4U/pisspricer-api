@@ -31,7 +31,7 @@ env:
   MYSQL_PORTNO: ${{ secrets.MYSQL_PORT }}
   MYSQL_HOST_IP: ${{ secrets.MYSQL_HOST }}
   MYSQL_PWORD: ${{ secrets.MYSQL_PASSWORD }}
-  MYSQL_USR: ${{ secrets.MYSQL_USER }}:  
+  MYSQL_USR: ${{ secrets.MYSQL_USER }}
 
 jobs:
   setup-build-publish-deploy:
