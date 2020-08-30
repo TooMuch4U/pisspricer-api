@@ -1,5 +1,11 @@
 const mysql = require('promise-mysql');
 
+console.log(process.env.MYSQL_PASSWORD);
+console.log(process.env.MYSQL_USER);
+console.log(process.env.MYSQL_DATABASE);
+
+
+
 let pool = null;
 exports.createPool = async function () {
     pool = mysql.createPool({

@@ -5,7 +5,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json /usr/src/app/api/
+COPY /api/package.json /usr/src/app/
 RUN apk add --no-cache make gcc g++ python && \
   npm install --production --silent && \
   apk del make gcc g++ python
