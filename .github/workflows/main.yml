@@ -5,6 +5,9 @@ on:
    branches:
    - master
 
+defaults:
+  run:
+    working-directory: ./api
 
 
 jobs:
@@ -17,8 +20,6 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
-      - name: Test
-        run: ls
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@v2.3.0
         with:
