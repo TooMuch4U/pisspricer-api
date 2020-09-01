@@ -15,7 +15,6 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@v2.3.0
         with:
@@ -24,6 +23,7 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           # An optional variables parameter can be used
           gae_variables: ${{ secrets.GAE_VARIABLES }}
+          gae_config_path: app.yaml
 
       - name: Publish app to Google App Engine
         run: |
