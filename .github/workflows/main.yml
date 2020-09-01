@@ -5,6 +5,10 @@ on:
    branches:
    - master
 
+defaults:
+  run:
+    working-directory: api
+
 jobs:
   build:
     # Job name is Greeting
