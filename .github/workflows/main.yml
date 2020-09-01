@@ -5,12 +5,13 @@ on:
    branches:
    - master
 
-defaults:
-  run:
-    working-directory: api
+
 
 jobs:
   build:
+    defaults:
+       run:
+         working-directory: api
     # Job name is Greeting
     name: Deploy
     # This job runs on Linux
