@@ -16,8 +16,6 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
-      - name: CD
-        run: cd api
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@v2.3.0
         with:
