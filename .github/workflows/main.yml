@@ -16,11 +16,15 @@ jobs:
        node-version: '12'
    - run: npm install
    - run: npm test
+   # Setup gcloud CLI
+   - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+     with:
+        version: '290.0.1'
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
 
    - name: Publish app to Google App Engine
      run: |
-        # This client-secret.json is converted by GCP_SA_KEY.
-        gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
         gcloud config set project ${{ secrets.PROJECT_ID }}
         gcloud -q app deploy app.yaml --promote
 
