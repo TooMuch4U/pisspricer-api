@@ -25,7 +25,7 @@ jobs:
 
    - name: Publish app to Google App Engine
      run: |
-        gcloud -q app deploy app.yaml --promote
+        gcloud -q app deploy app.yml --promote
 
         # Suppose you need a cron task.
         # gcloud -q app deploy cron.yaml
