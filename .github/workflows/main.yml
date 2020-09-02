@@ -17,8 +17,8 @@ jobs:
           PROJECT_ID: pisspricer
           APPLICATION_CREDENTIALS: ${{secrets.GKE_SA_KEY}}
      with:
-          args: app deploy app.yml
-   - run: ls 
+          args: info
+   - run: gcloud app deploy app.yml
           
           
 
