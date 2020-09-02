@@ -23,4 +23,5 @@ jobs:
           APPLICATION_CREDENTIALS: ${{secrets.GKE_SA_KEY}}
      with:
           args: app deploy app.yaml
+      
 
