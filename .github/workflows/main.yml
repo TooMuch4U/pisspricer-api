@@ -10,13 +10,7 @@ jobs:
  install:
   runs-on: ubuntu-latest
   steps:
-   - uses: actions/checkout@master
-   - uses: actions/setup-node@v1
-     with:
-       node-version: '12'
-   - run: npm install
-   - run: npm test
-   # Setup gcloud CLI
+   - uses: actions/checkout@v1
    - uses: actions-hub/gcloud@master
      env:
           PROJECT_ID: pisspricer
