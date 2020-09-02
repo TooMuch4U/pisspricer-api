@@ -25,7 +25,6 @@ jobs:
 
    - name: Publish app to Google App Engine
      run: |
-        gcloud config set project ${{ secrets.PROJECT_ID }}
         gcloud -q app deploy app.yaml --promote
 
         # Suppose you need a cron task.
