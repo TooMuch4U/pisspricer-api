@@ -18,6 +18,7 @@ jobs:
           APPLICATION_CREDENTIALS: ${{secrets.GKE_SA_KEY}}
      with:
           args: info
+   - run: gcloud auth activate-service-account --key-file=${{secrets.GKE_SA_KEY}}
    - run: gcloud app deploy app.yml
           
           
