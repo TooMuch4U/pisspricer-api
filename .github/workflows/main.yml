@@ -29,5 +29,5 @@ jobs:
         gcloud -q app deploy app.yaml --promote
 
         # Suppose you need a cron task.
-        gcloud -q app deploy cron.yaml
+        # gcloud -q app deploy cron.yaml
 
