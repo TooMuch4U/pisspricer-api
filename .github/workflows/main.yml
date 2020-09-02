@@ -19,7 +19,7 @@ jobs:
    # Setup gcloud CLI
    - uses: actions-hub/gcloud@master
      env:
-          PROJECT_ID: pisspricer
+          PROJECT_ID: 358672225584
           APPLICATION_CREDENTIALS: ${{secrets.GKE_SA_KEY}}
      with:
           args: app deploy app.yaml
