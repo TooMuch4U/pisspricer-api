@@ -16,6 +16,6 @@ jobs:
           PROJECT_ID: pisspricer
           APPLICATION_CREDENTIALS: ${{secrets.GKE_SA_KEY}}
      with:
-          args: info
+          args: ls
           
 
