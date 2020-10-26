@@ -323,7 +323,7 @@ class CustomError extends Error {
 }
 
 exports.getSkuSlug = async function (slug) {
-    const sql = `SELECT SKU FROM items WHERE slug = ?`;
+    const sql = `SELECT sku FROM item WHERE slug = ?`;
     try {
         const rows = await db.getPool().query(sql, [slug]);
         return rows.length < 1 ? null : rows[0].sku
