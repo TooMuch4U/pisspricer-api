@@ -16,7 +16,13 @@ exports.getStores = async function (req, res) {
         "count": "integer|min:0"
     };
     try {
-        const sku = req.params.sku;
+        let sku;
+        if (req.query.mode === 'slug') {
+            sku = await Prices.getSkuSlug(req.params.sku)
+        } else {
+            sku = req.params.sku;
+        }
+
         const isAdmin = req.userPermission >= 5;
 
         // Check if item exist

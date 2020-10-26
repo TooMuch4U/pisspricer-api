@@ -321,3 +321,15 @@ class CustomError extends Error {
         super(...params);
     }
 }
+
+exports.getSkuSlug = async function (slug) {
+    const sql = `SELECT SKU FROM items WHERE slug = ?`;
+    try {
+        const rows = await db.getPool().query(sql, [slug]);
+        return rows.length < 1 ? null : rows[0].sku
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+};
