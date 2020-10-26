@@ -6,6 +6,7 @@ const Locations = require('../models/locations.model');
 const passwords = require('../services/passwords');
 const Brands = require('../models/brands.model');
 const tools = require('../services/tools');
+const Prices = require('../models/itemPrices.model');
 
 exports.create = async function (req, res) {
     const rules = {
@@ -98,7 +99,17 @@ exports.delete = async function (req, res) {
 };
 exports.getOne = async function (req, res) {
     try {
-        const item = await Items.getBySku(req.params.sku);
+        let item;
+        if (req.query.mode === 'slug') {
+            let sku = await Prices.getSkuSlug(req.params.sku);
+            item = null;
+            if (sku != null) {
+                item = await Items.getBySku(sku);
+            }
+        } else {
+            item = await Items.getBySku(req.params.sku);
+        }
+
         if (item == null) {
             res.statusMessage = "Not Found";
             res.status(404).send()
