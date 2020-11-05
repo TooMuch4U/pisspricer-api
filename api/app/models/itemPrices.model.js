@@ -103,9 +103,19 @@ exports.getPriceCount = async function (sku, queryData, isAdmin) {
         delete queryData.count;
         delete queryData.index;
         const query = generateSelectSql(sku, queryData, isAdmin);
-        const sql = `SELECT count(*) as total \n ${query.from} \n ${query.where} \n ${query.having}`;
+        let select = `SELECT `;
+        if (queryData.lng == null || queryData.lat == null) {
+            select = select + ` 0 as distance`;
+        }
+        else {
+            select = select + `ST_Distance_Sphere(
+                        point(L.longitude, L.lattitude),
+                        point(?, ?)
+                    )/1000 as distance`;
+        }
+        const sql = `${select} \n ${query.from} \n ${query.where} \n ${query.having}`;
         const rows = await db.getPool().query(sql, query.data);
-        return rows[0].total
+        return rows.length
     }
     catch (err) {
         tools.logSqlError(err);

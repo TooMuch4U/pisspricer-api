@@ -42,7 +42,8 @@ exports.getStores = async function (req, res) {
         }
 
         let priceList = await Prices.getAll(sku, req.query, isAdmin);
-        res.status(200).json(priceList)
+        let priceCount = await Prices.getPriceCount(sku, req.query, isAdmin);
+        res.status(200).json({totalCount: priceCount, count: priceList.length, items: priceList})
     }
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}
