@@ -4,7 +4,9 @@ const tools = require('../services/tools');
 const randtoken = require('rand-token');
 
 function generateSelectSql(sku, queryData, isAdmin) {
-    let sql = `SELECT P.store_loc_id as store_id,
+
+    // SELECT
+    let select = `SELECT P.store_loc_id as store_id,
                         P.url,
                         S.name as store_name,
                         S.store_id as brand_id,
@@ -18,11 +20,10 @@ function generateSelectSql(sku, queryData, isAdmin) {
 
     // Set distance if possible
     if (queryData.lng == null || queryData.lat == null) {
-        sql = sql + ` 0 as distance`;
-
+        select = select + ` 0 as distance`;
     }
     else {
-        sql = sql + `ST_Distance_Sphere(
+        select = select + `ST_Distance_Sphere(
                         point(L.longitude, L.lattitude),
                         point(?, ?)
                     )/1000 as distance`;
@@ -31,64 +32,80 @@ function generateSelectSql(sku, queryData, isAdmin) {
             queryData.lat
         ];
     }
-
     // Admin data
     if (isAdmin) {
-        sql = sql + `, P.internal_sku`
+        select = select + `, P.internal_sku`
     }
 
-    // Sku
-    data.push(sku);
-    sql = sql + `\nFROM location_stocks_item P
+   // FROM
+    let from =  `FROM location_stocks_item P
                         LEFT JOIN store_location S ON P.store_loc_id = S.store_loc_id
                         LEFT JOIN store B ON S.store_id = B.store_id
-                        LEFT JOIN location L ON S.store_loc_id = L.store_loc_id
-                  
-                  WHERE P.sku = ?\n`;
+                        LEFT JOIN location L ON S.store_loc_id = L.store_loc_id`;
+
+    // WHERE
+    data.push(sku);
+    let where = `WHERE P.sku = ?`;
 
     // Radius
+    let having = ``;
     if (queryData.r != null) {
-        sql = sql + ` HAVING distance <= ?\n`;
+        having = ` HAVING distance <= ?`;
         data.push(queryData.r);
     }
 
     // Order
-    sql = sql + `ORDER BY `;
+    let order = `ORDER BY `;
     if (queryData.order == "dist-asc") {
-        sql = sql + `distance ASC, best_price ASC`;
+        order = order + `distance ASC, best_price ASC`;
     }
     else if (queryData.order == "dist-desc") {
-        sql = sql + `distance DESC, best_price ASC`;
+        order = order + `distance DESC, best_price ASC`;
     }
     else if (queryData.order == "price-desc") {
-        sql = sql + `best_price DESC, distance ASC`;
+        order = order + `best_price DESC, distance ASC`;
     }
     else {
-        sql = sql + `best_price ASC, distance ASC`;
+        order = order + `best_price ASC, distance ASC`;
     }
-    sql = sql + `\n`;
 
     // LIMIT and OFFSET
+    let limit = ``;
     if (typeof queryData.count !== 'undefined') {
-        sql = sql + `LIMIT ?\n`;
+        limit = limit + `LIMIT ?`;
         data.push(parseInt(queryData.count));
     }
     if (typeof queryData.index !== 'undefined') {
         if (typeof queryData.count === 'undefined') {
-            sql += `LIMIT ?\n`;
+            limit += `LIMIT ?\n`;
             data.push(1000000000);
         }
-        sql = sql + `OFFSET ?\n`;
+        limit = limit + ` OFFSET ?\n`;
         data.push(parseInt(queryData.index));
     }
 
-    return {sql: sql, data: data};
+    let sql = `${select} \n ${from} \n ${where} \n ${having} \n ${order} \n ${limit}`;
+    return {sql: sql, data: data, select, from, where, having, order, limit};
 };
 exports.getAll = async function (sku, queryData, isAdmin) {
     try {
         const query = generateSelectSql(sku, queryData, isAdmin);
         const rows = await db.getPool().query(query.sql, query.data);
         return tools.toCamelCase(rows)
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+};
+exports.getPriceCount = async function (sku, queryData, isAdmin) {
+    try {
+        delete queryData.count;
+        delete queryData.index;
+        const query = generateSelectSql(sku, queryData, isAdmin);
+        const sql = `SELECT count(*) as total \n ${query.from} \n ${query.where} \n ${query.having}`;
+        const rows = await db.getPool().query(sql, query.data);
+        return rows[0].total
     }
     catch (err) {
         tools.logSqlError(err);
