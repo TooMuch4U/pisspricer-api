@@ -1,0 +1,22 @@
+name: Deploy to production
+
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: git pull (via ssh)
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            ls -a
+            ls
+          host: ${{ secrets.SSH_HOST }}
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.PRIVATE_KEY}}
+          port: ${{ secrets.SSH_PORT }}
