@@ -69,7 +69,7 @@ function buildSelectSql (query) {
     }
     // Search filter
     if (typeof query.search !== 'undefined') {
-        whereArray.push(`(I.name like ? OR LOWER(category) like LOWER(?)`);
+        whereArray.push(`(I.name like ? OR LOWER(C.name) like LOWER(?))`);
         data.push(`%${query.search}%`);
         data.push(`%${query.search}%`);
 
