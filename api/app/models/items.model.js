@@ -105,9 +105,9 @@ function buildSelectSql (query) {
             break;
         case 'best-match':
         default:
-            order += `CASE WHEN I.name LIKE ? THEN 1
+            order += `CASE WHEN I.name LIKE ? THEN 2
                            WHEN I.name LIKE ? THEN 3
-                           ELSE 2
+                           ELSE 1
                       END`;
             data.push(`${query.search}%`);
             data.push(`%${query.search}`);
