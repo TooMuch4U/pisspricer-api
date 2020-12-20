@@ -1,0 +1,33 @@
+name: Deploy to production
+
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: git pull (via ssh)
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /home/tom/Documents/pisspricer-api/api
+            git checkout master
+            git pull
+          host: ${{ secrets.SSH_HOST }}
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.PRIVATE_KEY}}
+          port: ${{ secrets.SSH_PORT }}
+      - name: restart api (via ssh)
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            systemctl restart pisspricer-api
+          host: ${{ secrets.SSH_HOST }}
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.PRIVATE_KEY}}
+          port: ${{ secrets.SSH_PORT }}    
+      
