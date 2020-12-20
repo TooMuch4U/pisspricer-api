@@ -69,9 +69,9 @@ function buildSelectSql (query) {
     }
     // Search filter
     if (typeof query.search !== 'undefined') {
-        whereArray.push(`(I.name like ? OR LOWER(C.name) like LOWER(?))`);
+        whereArray.push(`(I.name like ? OR C.category_id in (SELECT c2.category_id FROM category as c2 WHERE c2.name = ?))`);
         data.push(`%${query.search}%`);
-        data.push(`%${query.search}%`);
+        data.push(`${query.search}`);
 
     }
     // Region
