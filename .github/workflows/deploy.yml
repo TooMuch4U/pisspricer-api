@@ -10,12 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: git pull (via ssh)
+      - name: git pull & restart (via ssh)
         uses: fifsky/ssh-action@master
         with:
           command: |
-            ls -a
-            ls
+            cd /home/tom/Documents/pisspricer-api/api
+            git checkout master
+            git pull
+            sudo systemctl restart pisspricer-api
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.PRIVATE_KEY}}
