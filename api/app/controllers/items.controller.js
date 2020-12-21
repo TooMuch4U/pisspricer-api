@@ -357,3 +357,27 @@ exports.getAllInternalIds = async function(req, res) {
         res.status(500).send()
     }
 };
+
+exports.getSuggestions = async function(req, res) {
+    const max_length = 5;
+    try {
+        if (typeof req.query.search === 'undefined') {
+            res.statusMessage = "Field 'search' not defined";
+            res.status(400).send();
+            return
+        }
+        if (req.query.search.length < 2) {
+            res.statusMessage = "Field 'search' less than 2 characters";
+            res.status(400).send();
+            return
+        }
+
+        let items = await Items.getSuggestions(req.query.search, max_length);
+        res.status(200).json(items)
+
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};

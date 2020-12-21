@@ -351,3 +351,28 @@ exports.getInternalIds = async function(brandId) {
     }
     return ids;
 };
+
+exports.getSuggestions = async function(search, maxLength) {
+    try {
+        let queryParams = {search: search};
+        let query = buildSelectSql(queryParams);
+        const sql = `SELECT I.name as name, I.sku as sku 
+                    FROM item I
+                    LEFT JOIN category C ON I.category_id = C.category_id
+                    ${query.where} and I.sku in (SELECT distinct(p.sku) FROM location_stocks_item p)
+                    ${query.order}`;
+        let items = await db.getPool().query(sql, query.data);
+        let length = items.length;
+        let res_item = {
+            totalCount: length,
+            count: (maxLength < length ? maxLength : length),
+            items
+        };
+        return res_item
+
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+};
