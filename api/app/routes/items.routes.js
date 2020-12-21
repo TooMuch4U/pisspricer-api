@@ -39,5 +39,8 @@ module.exports = function(app) {
         .get(authenticate.adminRequired, items.getAllNoPrice);
 
     app.route(app.rootUrl + "/internalids")
-        .get(authenticate.adminRequired, items.getAllInternalIds)
+        .get(authenticate.adminRequired, items.getAllInternalIds);
+
+    app.route(app.rootUrl + '/suggestions')
+        .get(items.getSuggestions)
 };
