@@ -69,7 +69,7 @@ function buildSelectSql (query) {
     }
     // Search filter
     if (typeof query.search !== 'undefined') {
-        whereArray.push(`(I.name like ? OR C.category_id in (SELECT c2.category_id FROM category as c2 WHERE c2.name = ?))`);
+        whereArray.push(`(I.name like ? OR I.sku in (SELECT I2.sku FROM item I2 LEFT JOIN category c2 on I2.category_id = c2.category_id WHERE c2.name = ?))`);
         data.push(`%${query.search}%`);
         data.push(`${query.search}`);
 
