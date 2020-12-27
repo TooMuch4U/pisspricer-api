@@ -65,7 +65,7 @@ exports.login = async function (req, res) {
         try {
             let foundUser = await Users.userByEmail(req.body.email);
             if (foundUser === null || !await passwords.compare(req.body.password, foundUser.password)) {
-                res.statusMessage = 'incorrect email/password supplied';
+                res.statusMessage = 'incorrect email and/or password supplied';
                 res.status(400).send();
             }
             else {
