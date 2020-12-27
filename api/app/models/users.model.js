@@ -30,6 +30,7 @@ exports.userByEmail = async function (email) {
 exports.login = async function (userId) {
     const sql = "UPDATE user SET auth_token = ? WHERE user_id = ?";
     try {
+        // TODO Test for no params
         const authToken = randtoken.generate(32);
         const rows = await db.getPool().query(sql, [authToken, userId]);
         return {userId, authToken};
