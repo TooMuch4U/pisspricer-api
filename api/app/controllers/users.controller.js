@@ -101,3 +101,37 @@ exports.get = async function (req, res) {
         res.status(500).send()
     }
 };
+
+exports.getOne = async function (req, res) {
+    try {
+        if (req.userPermission === 0) {
+            // User not logged in
+            res.statusMessage = 'Unauthorized';
+            res.status(401).send()
+        }
+
+        const requestedUserId = req.params.userId.toString();
+        const authUserId = req.authenticatedUserId.toString();
+        const userInfo = await Users.getOne(requestedUserId);
+
+        // Check if the user exists
+        if (userInfo === null) {
+            // User doesn't exist
+            res.statusMessage = 'Not Found';
+            res.status(404).send()
+        }
+
+        // Check if the user is authorized to view
+        if (requestedUserId === authUserId || req.userPermission >= 5) {
+            res.status(200).json(userInfo)
+        }
+
+        // Not allowed to view
+        res.statusMessage = 'Forbidden';
+        res.status(403).send();
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
