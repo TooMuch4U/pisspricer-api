@@ -77,7 +77,8 @@ exports.search = async function (query) {
 };
 
 exports.getOne = async function (userId) {
-    const sql = `SELECT firstname, lastname, email, login_date as loginDate, is_verified as isVerified, user_id as userId
+    const sql = `SELECT firstname, lastname, email, login_date as loginDate, 
+    is_verified as isVerified, user_id as userId, email, permission
     FROM user WHERE user_id = ?`;
     try {
         const rows = await db.getPool().query(sql, userId);
