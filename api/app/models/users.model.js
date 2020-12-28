@@ -75,3 +75,19 @@ exports.search = async function (query) {
         throw(err);
     }
 };
+
+exports.getOne = async function (userId) {
+    const sql = `SELECT firstname, lastname, email, login_date as loginDate, is_verified as isVerified, user_id as userId
+    FROM user WHERE user_id = ?`;
+    try {
+        const rows = await db.getPool().query(sql, userId);
+        if (rows.length < 1) {
+            return null
+        }
+        return rows[0]
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};
