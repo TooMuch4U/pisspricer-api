@@ -37,6 +37,7 @@ let sendVerifyEmail = function (authToken, userId, email) {
 
 exports.create = async function (user) {
     // Make sql
+    // TODO ADD current date
     const createSQL = 'INSERT INTO USER (email, password, firstname, lastname, auth_token) VALUES (?, ?, ?, ?, ?)';
     const authToken = randtoken.generate(32);
     const userData = [user.email, await passwords.hash(user.password), user.firstname, user.lastname, authToken];
@@ -49,9 +50,14 @@ exports.create = async function (user) {
         const userId = result.insertId;
 
         // Send verify email
-        await sendVerifyEmail(authToken, userId, user.email);
+        sendVerifyEmail(authToken, userId, user.email)
+            .then(() => {
+                return userId
+            })
+            .catch((err) => {
+                throw err
+            });
 
-        return userId;
     } catch (err) {
         await conn.rollback();
         tools.logSqlError(err);
