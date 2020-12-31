@@ -1581,6 +1581,7 @@ paths:
         '500':
           description: Server Error
                   
+  
   /users/{userId}:
     parameters:
       - in: path
@@ -1623,6 +1624,36 @@ paths:
           description: Not Found
         '500':
           description: Server Error
+  
+  /users/{userId}/verify/{secretCode}:
+    parameters:
+      - in: path
+        name: userId
+        schema:
+          type: integer
+        required: true
+        description: "User Id"
+      - in: path
+        name: secretCode
+        schema:
+          type: string
+        required: true
+        description: "Secret code"
+    post:
+      summary: "Verifies a users email address"
+      tags:
+        - Users
+      responses:
+        '201':
+          description: Ok Created
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Server Error
+          
+      
   
 # Added by API Auto Mocking Plugin
 servers:
