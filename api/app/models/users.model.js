@@ -2,18 +2,62 @@ const db = require('../../config/db');
 const passwords = require('../services/passwords');
 const tools = require('../services/tools');
 const randtoken = require('rand-token');
+const nodemailer = require('nodemailer');
+
+let sendVerifyEmail = function (authToken, userId, email) {
+    return new Promise((resolve,reject)=> {
+        const transporter = nodemailer.createTransport({
+            port: 465,               // true for 465, false for other ports
+            host: process.env.EMAIL_HOST,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+            secure: true,
+        });
+
+        const verifyUrl = `https://www.pisspricer.co.nz/register/${userId}/verify/${authToken}`;
+
+        const mailData = {
+            from: process.env.EMAIL_ADDRESS,  // sender address
+            to: email,   // list of receivers
+            subject: 'Verify your account',
+            text: '',
+            html: `<br> Use the following link to verify your accounts email, ${verifyUrl}<br/>`,
+        };
+
+        transporter.sendMail(mailData, function (err, info) {
+            if (err) {
+                reject(err)
+            }
+            resolve()
+        });
+    })
+};
 
 exports.create = async function (user) {
-    const createSQL = 'INSERT INTO USER (email, password, firstname, lastname) VALUES (?, ?, ?, ?)';
+    // Make sql
+    const createSQL = 'INSERT INTO USER (email, password, firstname, lastname, auth_token) VALUES (?, ?, ?, ?, ?)';
+    const authToken = randtoken.generate(32);
+    const userData = [user.email, await passwords.hash(user.password), user.firstname, user.lastname, authToken];
 
-    const userData = [user.email, await passwords.hash(user.password), user.firstname, user.lastname];
-
+    // Start a transaction
+    const conn = await db.getPool().getConnection();
+    await conn.beginTransaction();
     try {
-        const result = await db.getPool().query(createSQL, userData);
-        return result.insertId;
+        const result = await conn.query(createSQL, userData);
+        const userId = result.insertId;
+
+        // Send verify email
+        await sendVerifyEmail(authToken, userId, user.email);
+
+        return userId;
     } catch (err) {
+        await conn.rollback();
         tools.logSqlError(err);
-        throw err;
+        throw err
+    } finally {
+        conn.release()
     }
 };
 exports.userByEmail = async function (email) {
