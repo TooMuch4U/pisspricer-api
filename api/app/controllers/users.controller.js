@@ -143,6 +143,11 @@ exports.verifyEmail = async function (req, res) {
 
         // If user doesn't exist
         let message = "";
+        if (user === null) {
+            message = "Not Found"
+        }
+
+        // Check if user is already verified
         if (user.isVerified) {
             message = "Not Found: User already verified"
         }
