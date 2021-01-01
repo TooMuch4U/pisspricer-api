@@ -193,10 +193,10 @@ exports.resendEmailCode = async function (userInfo) {
     }
 };
 
-exports.resetLoginCount = async function (userId) {
-    const sql = `UPDATE user SET login_count = 0 WHERE user_id = ?`;
+exports.setLoginCount = async function (userId, loginCount) {
+    const sql = `UPDATE user SET login_count = ? WHERE user_id = ?`;
     try {
-        let response = await db.getPool().query(sql, userId);
+        let response = await db.getPool().query(sql, [loginCount, userId]);
         if (response.affectedRows !== 1) {
             throw( new Error(`Should have been 1 rows changed, but there was ${response.affectedRows} changed.`))
         }
