@@ -1647,9 +1647,9 @@ paths:
         '500':
           description: Server Error
           
-  /users/resend:
+  /users/{email}/resend:
     parameters:
-      - in: query
+      - in: path
         name: email
         schema:
           type: string
