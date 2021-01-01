@@ -68,6 +68,10 @@ exports.login = async function (req, res) {
                 res.statusMessage = 'incorrect email and/or password supplied';
                 res.status(400).send();
             }
+            else if (!foundUser.isVerified) {
+                res.statusMessage = "Forbidden: Account email is not verified";
+                res.status(403).send()
+            }
             else {
                 const user = await Users.login(foundUser.userId);
                 res.status(200).json(user);
