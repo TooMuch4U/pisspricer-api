@@ -123,7 +123,8 @@ exports.getOne = async function (req, res) {
 
         // Check if the user is authorized to view
         if (requestedUserId === authUserId || req.userPermission >= 5) {
-            res.status(200).json(userInfo)
+            res.status(200).json(userInfo);
+            return
         }
 
         // Not allowed to view
@@ -168,12 +169,51 @@ exports.verifyEmail = async function (req, res) {
 
         if (message !== "") {
             res.statusMessage = message;
-            res.status(404).send()
+            res.status(404).send();
+            return;
         }
 
         await Users.setVerified(req.params.userId);
         res.status(200).send()
 
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+
+exports.resendCode = async function (req, res) {
+    try {
+        const user = await Users.userByEmail(req.params.email);
+        const resendLimit = 2;
+        const resetLimitHours = 1;
+
+        // Check if user is already verified
+        if (user === null || user.isVerified) {
+            res.statusMessage = "Not Found";
+            res.status(404).send();
+            return
+        }
+
+        // Check if resend count should be reset
+        const createdDate = Date.parse(user.loginDate);
+        const now = Date.now();
+        const diffHours = Math.abs(now - createdDate) / (1000 * 60 * 60);
+        if (diffHours > resetLimitHours) {
+            await Users.resetLoginCount(user.userId);
+            user.loginCount = 0
+        }
+
+        // Check the limit is not exceeded
+        if (user.loginCount > resendLimit) {
+            res.statusMessage = "Forbidden: Request limit exceeded";
+            res.status(429).send();
+            return
+        }
+
+        await Users.resendEmailCode(user);
+        res.status(200).send()
     }
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}

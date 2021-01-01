@@ -19,6 +19,9 @@ module.exports = function(app) {
     app.route(baseUrl + '/:userId/verify/:secretCode')
         .post(users.verifyEmail);
 
+    app.route(baseUrl + '/:email/resend')
+        .post(users.resendCode);
+
     app.route(baseUrl)
         .get(authenticate.adminRequired, users.get);
 

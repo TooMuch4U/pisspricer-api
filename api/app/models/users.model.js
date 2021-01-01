@@ -35,6 +35,7 @@ let sendVerifyEmail = function (authToken, userId, email) {
         });
     })
 };
+exports.sendVerifyEmail = sendVerifyEmail;
 
 exports.create = async function (user) {
     // Make sql
@@ -170,3 +171,38 @@ exports.getAllUserInfo = async function (userId) {
     }
 };
 
+exports.resendEmailCode = async function (userInfo) {
+    const sql = `UPDATE user SET login_date = ?, login_count = ? WHERE user_id = ?`;
+    const data = [new Date(), userInfo.loginCount + 1, userInfo.userId];
+    // Start a transaction
+    const conn = await db.getPool().getConnection();
+    await conn.beginTransaction();
+    try {
+        let response = await conn.query(sql, data);
+        if (response.affectedRows !== 1) {
+            throw( new Error(`Should have been 1 rows changed, but there was ${response.affectedRows} changed.`))
+        }
+        await sendVerifyEmail(userInfo.authToken, userInfo.userId, userInfo.email);
+        await conn.commit();
+    } catch (err) {
+        await conn.rollback();
+        tools.logSqlError(err);
+        throw err
+    } finally {
+        await conn.release()
+    }
+};
+
+exports.resetLoginCount = async function (userId) {
+    const sql = `UPDATE user SET login_count = 0 WHERE user_id = ?`;
+    try {
+        let response = await db.getPool().query(sql, userId);
+        if (response.affectedRows !== 1) {
+            throw( new Error(`Should have been 1 rows changed, but there was ${response.affectedRows} changed.`))
+        }
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};
