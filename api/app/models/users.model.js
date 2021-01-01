@@ -23,7 +23,8 @@ let sendVerifyEmail = function (authToken, userId, email) {
             to: email,   // list of receivers
             subject: 'Verify your account',
             text: '',
-            html: `<br> Use the following link to verify your accounts email, ${verifyUrl}<br/>`,
+            html: `<br> Click <a href="${verifyUrl}">here</a> to verify your account. <br>
+                    Or use the following url, ${verifyUrl}<br/>`,
         };
 
         transporter.sendMail(mailData, function (err, info) {
@@ -37,10 +38,11 @@ let sendVerifyEmail = function (authToken, userId, email) {
 
 exports.create = async function (user) {
     // Make sql
-    // TODO ADD current date
-    const createSQL = 'INSERT INTO USER (email, password, firstname, lastname, auth_token) VALUES (?, ?, ?, ?, ?)';
+    const createSQL = `INSERT INTO USER (email, password, firstname, lastname, auth_token, login_date) 
+                        VALUES (?, ?, ?, ?, ?, ?)`;
     const authToken = randtoken.generate(32);
-    const userData = [user.email, await passwords.hash(user.password), user.firstname, user.lastname, authToken];
+    const userData = [user.email, await passwords.hash(user.password),
+        user.firstname, user.lastname, authToken, new Date()];
 
     // Start a transaction
     const conn = await db.getPool().getConnection();
@@ -50,20 +52,16 @@ exports.create = async function (user) {
         const userId = result.insertId;
 
         // Send verify email
-        sendVerifyEmail(authToken, userId, user.email)
-            .then(() => {
-                return userId
-            })
-            .catch((err) => {
-                throw err
-            });
+        await sendVerifyEmail(authToken, userId, user.email);
+        await conn.commit();
+        return userId;
 
     } catch (err) {
         await conn.rollback();
         tools.logSqlError(err);
         throw err
     } finally {
-        conn.release()
+        await conn.release()
     }
 };
 exports.userByEmail = async function (email) {
@@ -142,3 +140,33 @@ exports.getOne = async function (userId) {
         throw(err);
     }
 };
+
+exports.setVerified = async function (userId) {
+    const sql = `UPDATE user SET is_verified = 1, auth_token = null WHERE user_id = ?`;
+    try {
+        const response = await db.getPool().query(sql, userId);
+        if (response.affectedRows !== 1) {
+            throw( new Error(`Should have been 1 rows changed, but there was ${response.affectedRows} changed.`))
+        }
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};
+
+exports.getAllUserInfo = async function (userId) {
+    const sql = `SELECT * FROM user WHERE user_id = ?`;
+    try {
+        const rows = await db.getPool().query(sql, userId);
+        if (rows.length < 1) {
+            return null
+        }
+        return tools.toCamelCase(rows[0])
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw(err);
+    }
+};
+

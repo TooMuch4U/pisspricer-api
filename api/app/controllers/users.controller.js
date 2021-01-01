@@ -135,3 +135,42 @@ exports.getOne = async function (req, res) {
         res.status(500).send()
     }
 };
+
+exports.verifyEmail = async function (req, res) {
+    try {
+        const user = await Users.getAllUserInfo(req.params.userId);
+        const expiration = 24;
+
+        // If user doesn't exist
+        let message = "";
+        if (user.isVerified) {
+            message = "Not Found: User already verified"
+        }
+
+        // Check the code is correct
+        if (user.authToken !== req.params.secretCode) {
+            message = "Not Found: Verification code doesn't exist"
+        }
+
+        // Check the code isn't expired
+        const createdDate = Date.parse(user.loginDate);
+        const now = Date.now();
+        const diffHours = Math.abs(now - createdDate) / (1000 * 60 * 60);
+        if (diffHours > expiration) {
+            message = "Not Found: Verification code expired"
+        }
+
+        if (message !== "") {
+            res.statusMessage = message;
+            res.status(404).send()
+        }
+
+        await Users.setVerified(req.params.userId);
+        res.status(201).send()
+
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};

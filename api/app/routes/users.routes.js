@@ -16,6 +16,9 @@ module.exports = function(app) {
     app.route(baseUrl + '/:userId')
         .get(authenticate.setAuthenticatedUser, users.getOne);
 
+    app.route(baseUrl + '/:userId/verify/:secretCode')
+        .post(users.verifyEmail);
+
     app.route(baseUrl)
         .get(authenticate.adminRequired, users.get);
 
