@@ -166,7 +166,7 @@ exports.verifyEmail = async function (req, res) {
         }
 
         await Users.setVerified(req.params.userId);
-        res.status(201).send()
+        res.status(200).send()
 
     }
     catch (err) {
