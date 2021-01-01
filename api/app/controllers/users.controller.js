@@ -140,6 +140,7 @@ exports.verifyEmail = async function (req, res) {
     try {
         const user = await Users.getAllUserInfo(req.params.userId);
         const expiration = 24;
+        // TODO Add retry count parameter
 
         // If user doesn't exist
         let message = "";
