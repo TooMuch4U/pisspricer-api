@@ -1647,21 +1647,21 @@ paths:
         '500':
           description: Server Error
           
-  /users/{userId}/resend:
+  /users/resend:
     parameters:
-      - in: path
-        name: userId
+      - in: query
+        name: email
         schema:
-          type: integer
+          type: string
         required: true
-        description: "User Id"
+        description: "Email"
     post:
       summary: "Resends a users verification email"
       tags:
         - Users
       responses:
         '200':
-          description: Ok Created
+          description: Ok
         '404':
           description: Not Found
         '500':
