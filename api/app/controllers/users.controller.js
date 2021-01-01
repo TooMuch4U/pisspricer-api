@@ -201,7 +201,7 @@ exports.resendCode = async function (req, res) {
         const now = Date.now();
         const diffHours = Math.abs(now - createdDate) / (1000 * 60 * 60);
         if (diffHours > resetLimitHours) {
-            await Users.resetLoginCount(user.userId);
+            await Users.setLoginCount(user.userId, 0);
             user.loginCount = 0
         }
 
