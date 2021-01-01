@@ -77,7 +77,7 @@ exports.userByEmail = async function (email) {
     }
 };
 exports.login = async function (userId) {
-    const sql = "UPDATE user SET auth_token = ? WHERE user_id = ?";
+    const sql = "UPDATE user SET auth_token = ?, login_count = 0 WHERE user_id = ?";
     try {
         // TODO Test for no params
         const authToken = randtoken.generate(32);
