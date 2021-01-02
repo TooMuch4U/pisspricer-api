@@ -195,7 +195,7 @@ exports.resendCode = async function (req, res) {
 
         // Check if user is already verified
         if (user === null || user.isVerified) {
-            res.statusMessage = "Not Found";
+            res.statusMessage = "Not Found: Account either doesn't exist or is already verified";
             res.status(404).send();
             return
         }
