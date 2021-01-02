@@ -1527,13 +1527,22 @@ paths:
                     type: string
         '400':
           description: Bad Request
+        '403':
+          description: Forbidden
         '500':
           description: Server Error
 
   /users/register:
+    parameters:
+      - in: query
+        name: referer
+        schema:
+          type: string
+        required: false
+        description: Referer for registering
     post:
       summary: "Register as a user"
-      description: "Email must have an @ symbol. Firstname, lastname and password must be atleast 1 character"
+      description: "Email must have an @ symbol. Firstname, lastname and password must be atleast 1 character. If a referer is provided the link sent prefixed with the parameter."
       security: []
       tags:
         - Users
@@ -1655,6 +1664,12 @@ paths:
           type: string
         required: true
         description: "Email"
+      - in: query
+        name: referer
+        schema:
+          type: string
+        required: false
+        description: Referer for registering
     post:
       summary: "Resends a users verification email"
       tags:
