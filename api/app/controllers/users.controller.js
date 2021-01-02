@@ -24,9 +24,9 @@ exports.create = async function (req, res) {
         message = "Password must be atleast 1 character"
     }
 
-    if (message == "") {
+    if (message === "") {
         try {
-            let userId = await Users.create(req.body);
+            let userId = await Users.create(req.body, req.query.referer);
             res.statusMessage = 'Created';
             res.status(201)
                 .json({userId})
@@ -216,7 +216,7 @@ exports.resendCode = async function (req, res) {
             return
         }
 
-        await Users.resendEmailCode(user);
+        await Users.resendEmailCode(user, req.query.referer);
         res.status(200).send()
     }
     catch (err) {
