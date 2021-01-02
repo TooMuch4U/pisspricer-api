@@ -18,6 +18,8 @@ let sendVerifyEmail = function (authToken, userId, email, referUrl=null) {
 
         if (!(referUrl === 'https://pisspricer.co.nz' ||
               referUrl === 'https://dev.pisspricer.co.nz' ||
+              referUrl === 'https://www.dev.pisspricer.co.nz' ||
+              referUrl === 'https://www.pisspricer.co.nz' ||
               referUrl === 'http://localhost:8080')) {
             referUrl = 'https://pisspricer.co.nz'
         }
