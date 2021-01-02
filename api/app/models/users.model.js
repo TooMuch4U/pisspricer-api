@@ -4,7 +4,7 @@ const tools = require('../services/tools');
 const randtoken = require('rand-token');
 const nodemailer = require('nodemailer');
 
-let sendVerifyEmail = function (authToken, userId, email) {
+let sendVerifyEmail = function (authToken, userId, email, referUrl='https://pisspricer.co.nz') {
     return new Promise((resolve,reject)=> {
         const transporter = nodemailer.createTransport({
             port: 465,               // true for 465, false for other ports
@@ -16,7 +16,7 @@ let sendVerifyEmail = function (authToken, userId, email) {
             secure: true,
         });
 
-        const verifyUrl = `https://www.pisspricer.co.nz/register/${userId}/verify/${authToken}`;
+        const verifyUrl = `${referUrl}/register/${userId}/verify/${authToken}`;
 
         const mailData = {
             from: process.env.EMAIL_ADDRESS,  // sender address
@@ -37,7 +37,7 @@ let sendVerifyEmail = function (authToken, userId, email) {
 };
 exports.sendVerifyEmail = sendVerifyEmail;
 
-exports.create = async function (user) {
+exports.create = async function (user, referUrl='https://pisspricer.co.nz') {
     // Make sql
     const createSQL = `INSERT INTO USER (email, password, firstname, lastname, auth_token, login_date) 
                         VALUES (?, ?, ?, ?, ?, ?)`;
@@ -53,7 +53,7 @@ exports.create = async function (user) {
         const userId = result.insertId;
 
         // Send verify email
-        await sendVerifyEmail(authToken, userId, user.email);
+        await sendVerifyEmail(authToken, userId, user.email, referUrl);
         await conn.commit();
         return userId;
 
@@ -171,7 +171,7 @@ exports.getAllUserInfo = async function (userId) {
     }
 };
 
-exports.resendEmailCode = async function (userInfo) {
+exports.resendEmailCode = async function (userInfo, referUrl='https://pisspricer.co.nz') {
     const sql = `UPDATE user SET login_date = ?, login_count = ? WHERE user_id = ?`;
     const data = [new Date(), userInfo.loginCount + 1, userInfo.userId];
     // Start a transaction
@@ -182,7 +182,7 @@ exports.resendEmailCode = async function (userInfo) {
         if (response.affectedRows !== 1) {
             throw( new Error(`Should have been 1 rows changed, but there was ${response.affectedRows} changed.`))
         }
-        await sendVerifyEmail(userInfo.authToken, userInfo.userId, userInfo.email);
+        await sendVerifyEmail(userInfo.authToken, userInfo.userId, userInfo.email, referUrl);
         await conn.commit();
     } catch (err) {
         await conn.rollback();
