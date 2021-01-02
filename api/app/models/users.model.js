@@ -4,7 +4,7 @@ const tools = require('../services/tools');
 const randtoken = require('rand-token');
 const nodemailer = require('nodemailer');
 
-let sendVerifyEmail = function (authToken, userId, email, referUrl='https://pisspricer.co.nz') {
+let sendVerifyEmail = function (authToken, userId, email, referUrl=null) {
     return new Promise((resolve,reject)=> {
         const transporter = nodemailer.createTransport({
             port: 465,               // true for 465, false for other ports
@@ -15,6 +15,10 @@ let sendVerifyEmail = function (authToken, userId, email, referUrl='https://piss
             },
             secure: true,
         });
+
+        if (!(referUrl in ['https://pisspricer.co.nz', 'https://dev.pisspricer.co.nz', 'http://localhost:8080'])) {
+            referUrl = 'https://pisspricer.co.nz'
+        }
 
         const verifyUrl = `${referUrl}/register/${userId}/verify/${authToken}`;
 
@@ -37,7 +41,7 @@ let sendVerifyEmail = function (authToken, userId, email, referUrl='https://piss
 };
 exports.sendVerifyEmail = sendVerifyEmail;
 
-exports.create = async function (user, referUrl='https://pisspricer.co.nz') {
+exports.create = async function (user, referUrl=null) {
     // Make sql
     const createSQL = `INSERT INTO USER (email, password, firstname, lastname, auth_token, login_date) 
                         VALUES (?, ?, ?, ?, ?, ?)`;
@@ -171,7 +175,7 @@ exports.getAllUserInfo = async function (userId) {
     }
 };
 
-exports.resendEmailCode = async function (userInfo, referUrl='https://pisspricer.co.nz') {
+exports.resendEmailCode = async function (userInfo, referUrl=null) {
     const sql = `UPDATE user SET login_date = ?, login_count = ? WHERE user_id = ?`;
     const data = [new Date(), userInfo.loginCount + 1, userInfo.userId];
     // Start a transaction
