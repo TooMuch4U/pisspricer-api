@@ -1,8 +1,8 @@
 name: Deploy to production
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
@@ -17,6 +17,7 @@ jobs:
             cd /home/tom/Documents/pisspricer-api/api
             git checkout master
             git pull
+            npm install
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.PRIVATE_KEY}}
@@ -29,5 +30,5 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.PRIVATE_KEY}}
-          port: ${{ secrets.SSH_PORT }}    
-      
+          port: ${{ secrets.SSH_PORT }}
+
