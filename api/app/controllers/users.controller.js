@@ -154,12 +154,12 @@ exports.verifyEmail = async function (req, res) {
         }
 
         // Check if user is already verified
-        if (user.isVerified) {
+        if (user.isVerified === 1 && message === "") {
             message = "Not Found: User already verified"
         }
 
         // Check the code is correct
-        if (user.authToken !== req.params.secretCode) {
+        if (user.authToken !== req.params.secretCode && message === "") {
             message = "Not Found: Verification code doesn't exist"
         }
 
@@ -167,7 +167,7 @@ exports.verifyEmail = async function (req, res) {
         const createdDate = Date.parse(user.loginDate);
         const now = Date.now();
         const diffHours = Math.abs(now - createdDate) / (1000 * 60 * 60);
-        if (diffHours > expiration) {
+        if (diffHours > expiration && message === "") {
             message = "Not Found: Verification code expired"
         }
 
