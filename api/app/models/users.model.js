@@ -27,12 +27,24 @@ let sendVerifyEmail = function (authToken, userId, email, referUrl=null) {
         const verifyUrl = `${referUrl}/register/${userId}/verify/${authToken}`;
 
         const mailData = {
-            from: process.env.EMAIL_ADDRESS,  // sender address
+            from: {
+                address: process.env.EMAIL_ADDRESS,
+                name: 'Pisspricer No-reply'
+            },  // sender address
             to: email,   // list of receivers
-            subject: 'Verify your account',
+            subject: 'Verify your Pisspricer account',
             text: '',
-            html: `<br> Click <a href="${verifyUrl}">here</a> to verify your account. <br>
-                    Or use the following url, ${verifyUrl}<br/>`,
+            html: `
+<img src="cid:pisspricer">
+Welcome to pisspricer!<br> 
+Click <a href="${verifyUrl}">here</a> to verify your account.`,
+            attachments: [
+                {
+                    filename: 'pisspricer.png',
+                    path: './storage/photos/pisspricer.png',
+                    cid: 'pisspricer'
+                },
+            ]
         };
 
         transporter.sendMail(mailData, function (err, info) {
