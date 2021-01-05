@@ -3,6 +3,7 @@ const passwords = require('../services/passwords');
 const tools = require('../services/tools');
 const randtoken = require('rand-token');
 const nodemailer = require('nodemailer');
+const {getEmail} = require('../../storage/email/email');
 
 let sendVerifyEmail = function (authToken, userId, email, referUrl=null) {
     return new Promise((resolve,reject)=> {
@@ -34,14 +35,11 @@ let sendVerifyEmail = function (authToken, userId, email, referUrl=null) {
             to: email,   // list of receivers
             subject: 'Verify your Pisspricer account',
             text: '',
-            html: `
-<img src="cid:pisspricer">
-Welcome to pisspricer!<br> 
-Click <a href="${verifyUrl}">here</a> to verify your account.`,
+            html: getEmail(verifyUrl),
             attachments: [
                 {
                     filename: 'pisspricer.png',
-                    path: './storage/photos/pisspricer.png',
+                    path: './storage/photos/pisspricer4.png',
                     cid: 'pisspricer'
                 },
             ]
