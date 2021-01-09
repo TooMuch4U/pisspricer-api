@@ -36,10 +36,7 @@ $ docker build -t my-data-image:latest .
 ```
 
 ## Usage
-
-```bash
-$ docker run -d -p 3306:3306 my-data-image:latest
-```
+The container can be started with `./start.sh`, restarted to reset the data with `./restart.sh`  and stopped with `./stop.sh`.
 
 Docker will automatically extract the file as part of the build. You're done. The container from the Dockerfile will always have your clean data in it. To "reset" the container, just stop it & delete the volume it was using for /var/lib/mysql.
 
