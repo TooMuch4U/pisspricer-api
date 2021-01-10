@@ -7,3 +7,9 @@ The images on the development image bucket can be restored to the default test s
 ```bash
 ./reset_images.sh
 ```
+This deletes the *items* and *brands* directories in the bucket, then copies everything in *bucket-state* into the root directory.
+## Updating restore state
+The files that will be stored onto the bucket can be changed by updating the bucket-state folder.
+```bash
+gsutil -m cp -R bucket-state gs://images.pisspricer.co.nz
+```
