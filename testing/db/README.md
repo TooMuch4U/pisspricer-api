@@ -1,6 +1,5 @@
 # Database Testing Environment
-A testing environment for Pisspricer database.
-Most of this code is slightly modified the docker mysql source code, to set lower_case_table_names=1 when initialising.
+In short, a non persistent mysql docker container with a preset database state.  
 Each time the container is built, the database backup is copied into the image.
 
 ## Setup
@@ -43,3 +42,10 @@ The container data can be updated with the following.
     ```bash
     docker-compose build
     ```
+
+## Notes
+Most of this code is copied the docker mysql source code.
+- In particular, my.cnf was modified to set lower_case_table_names=1 when initialising.
+- An ADD command was added to the dockerfile, to add the database state.
+- The volume was removed from the dockerfile, so the changes would not persist.
+
