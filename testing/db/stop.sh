@@ -1,4 +1,4 @@
-DOCKER_IMAGE_NAME="my-data-image"
+DOCKER_IMAGE_NAME="db"
 PROCESSES=$(docker ps -a -q --filter ancestor=$DOCKER_IMAGE_NAME --format="{{.ID}}")
 
 if ! ( [ -z "$PROCESSES" ] )
