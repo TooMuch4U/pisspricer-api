@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: db
+    container_name: pisspricer-db
+    build: .
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+
+
