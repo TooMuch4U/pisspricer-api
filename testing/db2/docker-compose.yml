@@ -1,8 +1,9 @@
 version: '3'
 services:
   db:
-    image: db
+    image: db:latest
     container_name: pisspricer-db
+    hostname: pisspricer-db
     build: .
     ports:
       - "3307:3306"

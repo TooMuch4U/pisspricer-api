@@ -1,2 +1,2 @@
-docker run -d -p 3307:3306 db:latest
+docker-compose up -d
 echo "Started new mysql docker process"
