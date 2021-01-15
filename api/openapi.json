@@ -579,7 +579,7 @@
         }
       }
     },
-    "/items/{sku}/combine/{duplicate_sku}": {
+    "/items/{sku}/combine/{duplicateSku}": {
       "parameters": [
         {
           "in": "path",
@@ -592,7 +592,7 @@
         },
         {
           "in": "path",
-          "name": "duplicate_sku",
+          "name": "duplicateSku",
           "schema": {
             "type": "integer"
           },
