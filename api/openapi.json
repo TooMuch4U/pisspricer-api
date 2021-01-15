@@ -1,0 +1,2806 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "title": "Pisspricer API",
+    "description": ""
+  },
+  "paths": {
+    "/items": {
+      "get": {
+        "summary": "Get all items",
+        "description": "Permission required to see: barcodeCount, internalSku. Orders: price-asc, price-desc, best-match, alpha-asc, alpha-desc",
+        "tags": [
+          "Items"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "String to search for item"
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Number of results to display"
+          },
+          {
+            "in": "query",
+            "name": "index",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Index to start count from"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sort order"
+          },
+          {
+            "in": "query",
+            "name": "catId",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "description": "Category to filter"
+          },
+          {
+            "in": "query",
+            "name": "ean",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Returns only skus that match the barcode"
+          },
+          {
+            "in": "query",
+            "name": "regionId",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Region to look in"
+          },
+          {
+            "in": "query",
+            "name": "lat",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Lattitude"
+          },
+          {
+            "in": "query",
+            "name": "lng",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Longitude"
+          },
+          {
+            "in": "query",
+            "name": "r",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Radius to search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "count": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sku": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "brand": {
+                            "type": "string"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "categoryId": {
+                            "type": "integer"
+                          },
+                          "subcategoryId": {
+                            "type": "integer"
+                          },
+                          "subcategory": {
+                            "type": "string"
+                          },
+                          "stdDrinks": {
+                            "type": "number"
+                          },
+                          "alcoholContent": {
+                            "type": "number"
+                          },
+                          "volumeTotal": {
+                            "type": "integer"
+                          },
+                          "storeCount": {
+                            "type": "integer"
+                          },
+                          "bestPrice": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new item/sku",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Optional: brand, barcodes",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "brand": {
+                    "type": "string"
+                  },
+                  "categoryId": {
+                    "type": "integer"
+                  },
+                  "subcategoryId": {
+                    "type": "integer"
+                  },
+                  "stdDrinks": {
+                    "type": "number"
+                  },
+                  "alcoholContent": {
+                    "type": "number"
+                  },
+                  "volumeTotal": {
+                    "type": "integer"
+                  },
+                  "barcode": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sku": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/items/{sku}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        },
+        {
+          "in": "query",
+          "name": "mode",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Set to 'slug' if the slug was provided instead of sku"
+        }
+      ],
+      "get": {
+        "summary": "Get item with sku",
+        "tags": [
+          "Items"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sku",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Sku of item to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "brand": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "categoryId": {
+                      "type": "integer"
+                    },
+                    "subcategory": {
+                      "type": "string"
+                    },
+                    "subcategoryId": {
+                      "type": "integer"
+                    },
+                    "stdDrinks": {
+                      "type": "number"
+                    },
+                    "alcoholContent": {
+                      "type": "number"
+                    },
+                    "totalVolume": {
+                      "type": "integer"
+                    },
+                    "barcodes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes item with sku",
+        "tags": [
+          "Items"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates item data",
+        "tags": [
+          "Items"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "brand": {
+                    "type": "string"
+                  },
+                  "categoryId": {
+                    "type": "integer"
+                  },
+                  "subcategoryId": {
+                    "type": "integer"
+                  },
+                  "stdDrinks": {
+                    "type": "number"
+                  },
+                  "alcoholContent": {
+                    "type": "number"
+                  },
+                  "totalVolume": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/items/{sku}/barcodes": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        }
+      ],
+      "get": {
+        "summary": "Gets all item barcodes",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Adds an item barcode",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "barcode": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/items/{sku}/barcodes/{ean}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        },
+        {
+          "in": "path",
+          "name": "ean",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "Ean of item"
+        }
+      ],
+      "delete": {
+        "summary": "deletes an items barcode",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/items/{sku}/combine/{duplicate_sku}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        },
+        {
+          "in": "path",
+          "name": "duplicate_sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of duplicate item"
+        }
+      ],
+      "patch": {
+        "summary": "Combine two duplicate items into one sku",
+        "description": "Combines two duplicate items into one sku. Details from the original sku are used, unless specified in request body.",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                ],
+                "properties": {
+                  "slug": {
+                    "$ref": "#/components/schemas/ItemFull/properties/slug"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/items/{sku}/image": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        }
+      ],
+      "put": {
+        "description": "Set item photo",
+        "tags": [
+          "Images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Ok Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/barcodes": {
+      "get": {
+        "description": "Barcodes",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "barcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/suggestions": {
+      "parameters": [
+        {
+          "in": "query",
+          "name": "search",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "Search term"
+        }
+      ],
+      "get": {
+        "description": "Item Suggestions",
+        "tags": [
+          "Items"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "sku": {
+                            "type": "integer"
+                          },
+                          "hasImage": {
+                            "type": "integer"
+                          },
+                          "slug": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand/{brandId}/image": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "brandId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true
+        }
+      ],
+      "put": {
+        "description": "Set brand photo",
+        "tags": [
+          "Images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Ok Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/items/{sku}/stores": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        },
+        {
+          "in": "query",
+          "name": "lat",
+          "schema": {
+            "type": "number"
+          },
+          "required": false,
+          "description": "lattitude"
+        },
+        {
+          "in": "query",
+          "name": "lng",
+          "schema": {
+            "type": "number"
+          },
+          "required": false,
+          "description": "longitude"
+        },
+        {
+          "in": "query",
+          "name": "r",
+          "schema": {
+            "type": "integer"
+          },
+          "required": false,
+          "description": "radius to search in"
+        },
+        {
+          "in": "query",
+          "name": "order",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Ordering of items"
+        },
+        {
+          "in": "query",
+          "name": "index",
+          "schema": {
+            "type": "integer"
+          },
+          "required": false,
+          "description": "index to start search"
+        },
+        {
+          "in": "query",
+          "name": "count",
+          "schema": {
+            "type": "integer"
+          },
+          "required": false,
+          "description": "Ammount to show on page"
+        },
+        {
+          "in": "query",
+          "name": "mode",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Set to 'slug' if the slug was provided instead of sku"
+        }
+      ],
+      "get": {
+        "summary": "Get all the stores and prices the item is in",
+        "description": "Can be ordered by: price-asc, price-desc, dist-asc, dist-desc",
+        "tags": [
+          "Item in Store"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "storeName": {
+                            "type": "string"
+                          },
+                          "storeUrl": {
+                            "type": "string"
+                          },
+                          "storeId": {
+                            "type": "integer"
+                          },
+                          "brandId": {
+                            "type": "integer"
+                          },
+                          "brandName": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "number"
+                          },
+                          "salePrice": {
+                            "type": "number"
+                          },
+                          "stock": {
+                            "type": "string"
+                          },
+                          "dateChecked": {
+                            "type": "string"
+                          },
+                          "internalSku": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/items/{sku}/stores/{storeId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sku",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Sku of item"
+        },
+        {
+          "in": "path",
+          "name": "storeId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Store id"
+        }
+      ],
+      "get": {
+        "summary": "Gets a single store price for an item",
+        "tags": [
+          "Item in Store"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "storeId": {
+                      "type": "integer"
+                    },
+                    "storeBrandId": {
+                      "type": "integer"
+                    },
+                    "storeBrandName": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number"
+                    },
+                    "salePrice": {
+                      "type": "number"
+                    },
+                    "stock": {
+                      "type": "string"
+                    },
+                    "dateChecked": {
+                      "type": "string"
+                    },
+                    "internalSku": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Gets a single store price for an item",
+        "tags": [
+          "Item in Store"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "salePrice": {
+                    "type": "number"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "stock": {
+                    "type": "string"
+                  },
+                  "internalSku": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "OK Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an item from a store",
+        "tags": [
+          "Item in Store"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "summary": "Gets all categories",
+        "tags": [
+          "Categories"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "categoryId": {
+                        "type": "integer"
+                      },
+                      "category": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new category",
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categoryId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/categories/{catId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "catId",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Category ID",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get a single category",
+        "tags": [
+          "Categories"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "category": {
+                      "type": "string"
+                    },
+                    "categoryId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update category details",
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a category",
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/categories/{catId}/subcategories": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "catId",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Category ID",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get all subcategories for a category",
+        "tags": [
+          "Categories"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "subcategoryId": {
+                        "type": "integer"
+                      },
+                      "subcategory": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Submit new subcategory",
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subcategory": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "subcategoryId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/categories/{catId}/subcategories/{subId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "catId",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Category ID",
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "subId",
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Subcategory ID",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get a single subcategory",
+        "tags": [
+          "Categories"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "subcategory": {
+                      "type": "string"
+                    },
+                    "subcategoryId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a subcategory",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Categories"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/regions": {
+      "get": {
+        "summary": "Get all regions",
+        "security": [],
+        "tags": [
+          "Region"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "regionId": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "lattitude": {
+                        "type": "number"
+                      },
+                      "longitude": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/regions/{regionId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "regionId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Region Id"
+        }
+      ],
+      "get": {
+        "summary": "Gets a single region",
+        "security": [],
+        "tags": [
+          "Region"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "regionId": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "lattitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates new region",
+        "tags": [
+          "Region"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lattitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates region data",
+        "tags": [
+          "Region"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lattitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deltets the region",
+        "tags": [
+          "Region"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/stores": {
+      "get": {
+        "summary": "Get all stores",
+        "tags": [
+          "Store"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "storeId": {
+                        "type": "integer"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "brandName": {
+                        "type": "string"
+                      },
+                      "brandId": {
+                        "type": "integer"
+                      },
+                      "brandUrl": {
+                        "type": "string"
+                      },
+                      "locLat": {
+                        "type": "number"
+                      },
+                      "locLng": {
+                        "type": "number"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "postcode": {
+                        "type": "integer"
+                      },
+                      "regionName": {
+                        "type": "number"
+                      },
+                      "regLat": {
+                        "type": "number"
+                      },
+                      "regLng": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new store",
+        "tags": [
+          "Store"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "brandId": {
+                    "type": "integer"
+                  },
+                  "location": {
+                    "type": "object",
+                    "properties": {
+                      "lattitude": {
+                        "type": "number"
+                      },
+                      "longitude": {
+                        "type": "number"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "postcode": {
+                        "type": "integer"
+                      },
+                      "regionId": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "storeId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/stores/{storeId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "storeId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Store id"
+        }
+      ],
+      "get": {
+        "summary": "Gets store info for one store",
+        "tags": [
+          "Store"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "storeId": {
+                      "type": "integer"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "brandName": {
+                      "type": "string"
+                    },
+                    "brandId": {
+                      "type": "integer"
+                    },
+                    "brandUrl": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "lattitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "postcode": {
+                          "type": "integer"
+                        },
+                        "region": {
+                          "type": "object",
+                          "properties": {
+                            "lattitude": {
+                              "type": "number"
+                            },
+                            "longitude": {
+                              "type": "number"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Change store info",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Store"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "brandId": {
+                    "type": "integer"
+                  },
+                  "lattitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "postcode": {
+                    "type": "integer"
+                  },
+                  "regionId": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a store",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Store"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/stores/{storeId}/items": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "storeId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Store id"
+        }
+      ]
+    },
+    "/brands": {
+      "get": {
+        "summary": "Get all store brands",
+        "security": [],
+        "tags": [
+          "Brand"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "brandId": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new brand",
+        "tags": [
+          "Brand"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "brandId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/brands/{brandId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "brandId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "Brand Id"
+        }
+      ],
+      "get": {
+        "summary": "Gets a single brand",
+        "security": [],
+        "tags": [
+          "Brand"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates brand",
+        "tags": [
+          "Brand"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a brand and cascades",
+        "tags": [
+          "Brand"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Gets all users",
+        "description": "Must be admin",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "firstname",
+            "schema": {
+              "type": "string"
+            },
+            "description": "String to search for first name"
+          },
+          {
+            "in": "query",
+            "name": "lastname",
+            "schema": {
+              "type": "string"
+            },
+            "description": "String to search for last name"
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Number of results to display"
+          },
+          {
+            "in": "query",
+            "name": "startIndex",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Index to start count from"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "userId": {
+                        "type": "integer"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "permission": {
+                        "type": "integer"
+                      },
+                      "lastLogin": {
+                        "type": "string"
+                      },
+                      "firstname": {
+                        "type": "string"
+                      },
+                      "lastname": {
+                        "type": "string"
+                      },
+                      "brands": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "brandId": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "stores": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "storeId": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "Login",
+        "tags": [
+          "Users"
+        ],
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "authToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "parameters": [
+        {
+          "in": "query",
+          "name": "referer",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Referer for registering"
+        }
+      ],
+      "post": {
+        "summary": "Register as a user",
+        "description": "Email must have an @ symbol. Firstname, lastname and password must be atleast 1 character. If a referer is provided the link sent prefixed with the parameter.",
+        "security": [],
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "firstname": {
+                    "type": "string"
+                  },
+                  "lastname": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ok Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "summary": "Logout",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "userId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "User Id"
+        }
+      ],
+      "get": {
+        "summary": "User details",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "firstname": {
+                      "type": "string"
+                    },
+                    "lastname": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "loginDate": {
+                      "type": "string"
+                    },
+                    "permission": {
+                      "type": "integer"
+                    },
+                    "isVerified": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users/{userId}/verify/{secretCode}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "userId",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true,
+          "description": "User Id"
+        },
+        {
+          "in": "path",
+          "name": "secretCode",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "Secret code"
+        }
+      ],
+      "post": {
+        "summary": "Verifies a users email address",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok Created"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/users/{email}/resend": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "email",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "Email"
+        },
+        {
+          "in": "query",
+          "name": "referer",
+          "schema": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Referer for registering"
+        }
+      ],
+      "post": {
+        "summary": "Resends a users verification email",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "SwaggerHub API Auto Mocking",
+      "url": "https://virtserver.swaggerhub.com/t22124/pisspricer-api/1.0"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Item": {
+        "title": "Item Base Body",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Speights 12pk Bottle"
+          },
+          "brand": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Speights",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "integer",
+            "example": 1
+          },
+          "subcategoryId": {
+            "type": "integer",
+            "example": 1
+          },
+          "stdDrinks": {
+            "type": "number",
+            "example": 1.3,
+            "nullable": true,
+            "description": "Standard drinks in the entire pack"
+          },
+          "alcoholContent": {
+            "type": "number",
+            "example": 5.4,
+            "nullable": true,
+            "description": "Alcohol content in the drink, percentage"
+          },
+          "volumeTotal": {
+            "type": "number",
+            "example": 330,
+            "nullable": true,
+            "description": "Volume of the drink, in ml"
+          }
+        }
+      },
+      "ItemCreate": {
+        "title": "Item Create Body",
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item/properties"
+          }
+        ],
+        "properties": {
+          "barcode": {
+            "type": "string",
+            "example": 945647890812,
+            "nullable": true,
+            "description": "Barcode of the item"
+          }
+        }
+      },
+      "ItemFull": {
+        "title": "Full item",
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item/properties"
+          }
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique string id for the item"
+          },
+          "barcodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCreate/properties/barcode"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
