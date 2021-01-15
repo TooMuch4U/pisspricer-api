@@ -401,6 +401,10 @@ paths:
               schema:
                 anyOf:
                   - $ref: '#/components/schemas/Item'
+                properties:
+                  slug:
+                    $ref: '#/components/schemas/ItemFull/properties/slug'
+                    
       responses:
         '200':
           description: OK
@@ -1782,6 +1786,20 @@ components:
             example: 945647890812
             nullable: true
             description: Barcode of the item
+      ItemFull:
+        title: Full item
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/Item/properties'
+        properties:
+          slug:
+            type: string
+            minLength: 1
+            description: Unique string id for the item
+          barcodes:
+            type: array
+            items:
+              $ref: '#/components/schemas/ItemCreate/properties/barcode'
           
   securitySchemes:
     bearerAuth:            # arbitrary name for the security scheme
