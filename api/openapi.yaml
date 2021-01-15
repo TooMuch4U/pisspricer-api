@@ -373,7 +373,7 @@ paths:
         '500':
           description: Server Error
   
-  /items/{sku}/combine/{duplicate_sku}:
+  /items/{sku}/combine/{duplicateSku}:
     parameters:
       - in: path
         name: sku
@@ -382,7 +382,7 @@ paths:
         required: true
         description: Sku of item
       - in: path
-        name: duplicate_sku
+        name: duplicateSku
         schema:
           type: integer
         required: true
