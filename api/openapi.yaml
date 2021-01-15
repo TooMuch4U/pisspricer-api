@@ -362,6 +362,8 @@ paths:
       security:
         - bearerAuth: []
       responses:
+        '200':
+          description: Ok
         '401':
           description: Unauthorized
         '403':
@@ -371,6 +373,50 @@ paths:
         '500':
           description: Server Error
   
+  /items/{sku}/combine/{duplicate_sku}:
+    parameters:
+      - in: path
+        name: sku
+        schema:
+          type: integer
+        required: true
+        description: Sku of item
+      - in: path
+        name: duplicate_sku
+        schema:
+          type: integer
+        required: true
+        description: Sku of duplicate item 
+    
+    patch:
+      summary: Combine two duplicate items into one sku
+      description: Combines two duplicate items into one sku. Details from the original sku are used, unless specified in request body.
+      tags:
+        - Items
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          
+      
+
   /items/{sku}/image:
     parameters:
         - in: path
@@ -1690,6 +1736,53 @@ servers:
     url: https://virtserver.swaggerhub.com/t22124/pisspricer-api/1.0
     
 components:
+  schemas:
+      Item:
+        title: Item Base Body
+        type: object
+        properties:
+          name:
+            type: string
+            minLength: 1
+            example: Speights 12pk Bottle
+          brand:
+            type: string
+            minLength: 1
+            example: Speights
+            nullable: true
+          categoryId:
+            type: integer
+            example: 1
+          subcategoryId:
+            type: integer
+            example: 1
+          stdDrinks:
+            type: number
+            example: 1.3
+            nullable: true
+            description: Standard drinks in the entire pack
+          alcoholContent:
+            type: number
+            example: 5.4
+            nullable: true
+            description: Alcohol content in the drink, percentage
+          volumeTotal:
+            type: number
+            example: 330
+            nullable: true
+            description: Volume of the drink, in ml
+      ItemCreate:
+        title: Item Create Body
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/Item/properties'
+        properties:
+          barcode:
+            type: string
+            example: 945647890812
+            nullable: true
+            description: Barcode of the item
+          
   securitySchemes:
     bearerAuth:            # arbitrary name for the security scheme
       type: http
