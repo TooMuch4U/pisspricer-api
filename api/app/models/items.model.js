@@ -2,6 +2,7 @@ const db = require('../../config/db');
 const passwords = require('../services/passwords');
 const tools = require('../services/tools');
 const randtoken = require('rand-token');
+const Images = require('./images.model');
 
 exports.insert = async function (itemData, barcodeData, slugName) {
     const conn = await db.getPool().getConnection();
@@ -301,6 +302,22 @@ exports.setImage = async function (sku, hasImage) {
     return;
 };
 
+exports.setImageConn = async function (sku, hasImage, conn) {
+    const sql = `UPDATE item SET has_image = ? WHERE sku = ?`;
+    let result;
+    try {
+        result = await conn.query(sql, [hasImage, sku]);
+    }
+    catch (err) {
+        tools.logSqlError(err);
+        throw (err)
+    }
+    if (result.affectedRows !== 1) {
+        throw Error(`Should be 1 row changed but there was actually: ${result.changedRows}`);
+    }
+    return;
+};
+
 exports.allBarcodes = async function () {
     const sql = `SELECT * 
                  FROM item_barcode`;
@@ -385,5 +402,44 @@ exports.getSuggestions = async function(search, maxLength) {
     catch (err) {
         tools.logSqlError(err);
         throw (err)
+    }
+};
+
+exports.combineItems = async function (sku, duplicateSku, data, deleteDuplicateImage) {
+    const updateSkuSql = `UPDATE location_stocks_item SET sku = ? WHERE sku = ?`;
+    const updateBarcodeSql = `UPDATE item_barcode SET sku = ? WHERE sku = ?`;
+    const deleteSkuSql = `DELETE FROM item WHERE sku = ?`;
+    const updateItemSql = `UPDATE item SET ? WHERE sku = ?`;
+
+    const conn = await db.getPool().getConnection();
+    await conn.beginTransaction();
+    try {
+        // Change price entries for the old sku to the new sku
+        await conn.query(updateSkuSql, [sku, duplicateSku]);
+
+        // Change the barcode entries for the old sku to the new sku
+        await conn.query(updateBarcodeSql, [sku, duplicateSku]);
+
+        // Delete the old sku
+        await conn.query(deleteSkuSql, [duplicateSku]);
+
+        // Apply any updates to the remaining sku if any provided
+        if (!(Object.keys(data).length === 0 && data.constructor === Object)) {
+            await conn.query(updateItemSql, [data, sku]);
+        }
+        // Delete image
+        if (deleteDuplicateImage) {
+            await Images.deleteImage(duplicateSku, true);
+        }
+
+        await conn.commit();
+    }
+    catch (err) {
+        await conn.rollback();
+        tools.logSqlError(err);
+        throw (err)
+    }
+    finally {
+        conn.release();
     }
 };

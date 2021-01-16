@@ -7,6 +7,7 @@ const passwords = require('../services/passwords');
 const Brands = require('../models/brands.model');
 const tools = require('../services/tools');
 const Prices = require('../models/itemPrices.model');
+const validator = require('../services/validator');
 
 exports.create = async function (req, res) {
     const rules = {
@@ -375,6 +376,47 @@ exports.getSuggestions = async function(req, res) {
         let items = await Items.getSuggestions(req.query.search, max_length);
         res.status(200).json(items)
 
+    }
+    catch (err) {
+        if (!err.hasBeenLogged) {console.log(err)}
+        res.status(500).send()
+    }
+};
+
+exports.combineItems = async function (req, res) {
+    try {
+        const body = req.body;
+        // Check request body is valid
+        let validation = validator.checkAgainstSchema(
+            'components/schemas/ItemFull',
+            body);
+
+        const item = await Items.getBySku(req.params.sku);
+        const itemDuplicate = await Items.getBySku(req.params.duplicateSku);
+        // Check the items exist
+        if (item === null || itemDuplicate === null) {
+            res.statusMessage = "Not Found";
+            res.status(404).send();
+            return
+        }
+
+        // Check if the slug is from one of the existing items, if provided
+        if ('slug' in req.body && validation === true) {
+            if (req.body.slug !== item.slug && req.body.slug !== itemDuplicate.slug) {
+                validation = 'the provided slug is not from one of the existing items'
+            }
+        }
+
+        // Check the request body is valid
+        if (validation !== true) {
+            res.statusMessage = `Bad Request: ${validation}`;
+            res.status(400).send();
+            return
+        }
+
+        // Combine the items
+        await Items.combineItems(item.sku, itemDuplicate.sku, req.body, itemDuplicate.hasImage);
+        res.status(200).send();
     }
     catch (err) {
         if (!err.hasBeenLogged) {console.log(err)}
