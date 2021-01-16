@@ -32,6 +32,9 @@ module.exports = function(app) {
     app.route(baseUrl + '/:sku/image')
         .put(authenticate.adminRequired, items.setImage);
 
+    app.route(baseUrl + "/:sku/combine/:duplicateSku")
+        .patch(authenticate.adminRequired, items.combineItems);
+
     app.route(app.rootUrl + "/barcodes")
         .get(authenticate.adminRequired, items.getBarcodes);
 
@@ -43,4 +46,6 @@ module.exports = function(app) {
 
     app.route(app.rootUrl + '/suggestions')
         .get(items.getSuggestions)
+
+
 };
