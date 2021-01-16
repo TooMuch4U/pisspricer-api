@@ -28,4 +28,19 @@ exports.uploadImage = (file, folderPath) => new Promise((resolve, reject) => {
         .end(buffer)
 });
 
+exports.deleteImage = (sku, ignoreNotFound=false) => new Promise((resolve, reject) => {
+    const file = bucket.file(`items/${sku}.jpeg`);
+    file.delete({ignoreNotFound: ignoreNotFound})
+        .then(function(data) {
+            const apiResponse = data[0];
+            resolve(apiResponse)
+        })
+        .catch((err) => {
+            if (err.code === 404 && ignoreNotFound) {
+                resolve()
+            }
+            reject(err)
+        });
+});
+
 // TODO Add delete method, then add to delete items and brands methods
