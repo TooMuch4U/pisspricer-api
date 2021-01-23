@@ -9,7 +9,7 @@ const app = express();
 
 // Cors
 let cors = require('cors');
-let allowedOrigins = ['http://localhost',
+let allowedOrigins = ['http://localhost:8080',
     'https://www.pisspricer.co.nz',
     'https://pisspricer.co.nz',
     'https://dev.pisspricer.co.nz'];
@@ -25,7 +25,8 @@ app.use(cors({
             return callback(new Error(msg), false);
         }
         return callback(null, true);
-    }
+    },
+    "methods": "GET, HEAD, PUT, PATCH, POST, DELETE"
 }));
 
 
