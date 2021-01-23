@@ -425,7 +425,7 @@ exports.combineItems = async function (sku, duplicateSku, data, deleteDuplicateI
 
         // Apply any updates to the remaining sku if any provided
         if (!(Object.keys(data).length === 0 && data.constructor === Object)) {
-            await conn.query(updateItemSql, [data, sku]);
+            await conn.query(updateItemSql, [tools.toUnderscoreCase(data), sku]);
         }
         // Delete image
         if (deleteDuplicateImage) {
