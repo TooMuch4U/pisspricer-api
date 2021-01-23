@@ -7,29 +7,6 @@ const fs = require('fs');
 
 const app = express();
 
-// Cors
-let cors = require('cors');
-let allowedOrigins = ['http://localhost:8080',
-    'https://www.pisspricer.co.nz:443',
-    'https://pisspricer.co.nz:443',
-    'https://dev.pisspricer.co.nz:443'];
-
-app.use(cors({
-    origin: function(origin, callback){
-        // allow requests with no origin
-        // (like mobile apps or curl requests)
-        if(!origin) return callback(null, true);
-        if(allowedOrigins.indexOf(origin) === -1){
-            var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    "methods": "GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS"
-}));
-
-
 const port = process.env.OPEN_PORT || 8080;
 const httpsPort = process.env.OPEN_PORT_HTTPS;
 
