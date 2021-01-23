@@ -386,10 +386,13 @@ exports.getSuggestions = async function(req, res) {
 exports.combineItems = async function (req, res) {
     try {
         const body = req.body;
-        // Check request body is valid
-        let validation = validator.checkAgainstSchema(
-            'components/schemas/ItemFull',
-            body);
+        // Check request body is valid if any provided
+        let validation = true;
+        if (!(Object.keys(body).length === 0 && body.constructor === Object)) {
+            validation = validator.checkAgainstSchema(
+                'components/schemas/ItemFull',
+                body);
+        }
 
         const item = await Items.getBySku(req.params.sku);
         const itemDuplicate = await Items.getBySku(req.params.duplicateSku);
