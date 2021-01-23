@@ -10,9 +10,9 @@ const app = express();
 // Cors
 let cors = require('cors');
 let allowedOrigins = ['http://localhost:8080',
-    'http://www.pisspricer.co.nz',
-    'http://pisspricer.co.nz',
-    'http://dev.pisspricer.co.nz'];
+    'https://www.pisspricer.co.nz:443',
+    'https://pisspricer.co.nz:443',
+    'https://dev.pisspricer.co.nz:443'];
 
 app.use(cors({
     origin: function(origin, callback){
