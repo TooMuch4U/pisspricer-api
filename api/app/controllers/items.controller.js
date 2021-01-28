@@ -17,8 +17,9 @@ exports.create = async function (req, res) {
         "subcategoryId": "integer",
         "stdDrinks": "numeric",
         "alcoholContent": "numeric",
-        "volumeTotal": "integer",
-        "barcode": "string"
+        "volumeEach": "integer",
+        "barcode": "string",
+        "packSize": "integer"
     };
     try {
         let [isPass, error] = tools.validate(req.body, rules);
@@ -40,7 +41,7 @@ exports.create = async function (req, res) {
             else {
                 let barcodeData = { "ean": req.body.barcode };
                 delete req.body.barcode;
-                let slugName = req.body.name + (typeof req.body.volumeTotal == 'undefined' ? '' : req.body.volumeTotal);
+                let slugName = req.body.name + (typeof req.body.volumeEach == 'undefined' ? '' : req.body.volumeEach);
                 let data = tools.onlyInclude(req.body, Object.keys(rules));
                 let sku = await Items.insert(tools.toUnderscoreCase(data), barcodeData, slugName);
                 res.status(201).json({sku})
@@ -136,7 +137,8 @@ exports.modify = async function (req, res) {
         "slug": "string",
         "stdDrinks": "numeric",
         "alcoholContent": "numeric",
-        "volumeTotal": "integer"
+        "volumeEach": "integer",
+        "packSize": "integer"
     };
     try {
 
