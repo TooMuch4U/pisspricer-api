@@ -211,11 +211,14 @@
                   "alcoholContent": {
                     "type": "number"
                   },
-                  "volumeTotal": {
+                  "volumeEach": {
                     "type": "integer"
                   },
                   "barcode": {
                     "type": "string"
+                  },
+                  "packSize": {
+                    "type": "integer"
                   }
                 }
               }
@@ -406,7 +409,10 @@
                   "alcoholContent": {
                     "type": "number"
                   },
-                  "totalVolume": {
+                  "volumeEach": {
+                    "type": "integer"
+                  },
+                  "packSize": {
                     "type": "integer"
                   }
                 }
@@ -634,11 +640,14 @@
                   "alcoholContent": {
                     "$ref": "#/components/schemas/Item/properties/alcoholContent"
                   },
-                  "volumeTotal": {
-                    "$ref": "#/components/schemas/Item/properties/volumeTotal"
+                  "volumeEach": {
+                    "$ref": "#/components/schemas/Item/properties/volumeEach"
                   },
                   "slug": {
                     "$ref": "#/components/schemas/ItemFull/properties/slug"
+                  },
+                  "packSize": {
+                    "$ref": "#/components/schemas/ItemFull/properties/packSize"
                   }
                 }
               }
@@ -2758,11 +2767,17 @@
             "nullable": true,
             "description": "Alcohol content in the drink, percentage"
           },
-          "volumeTotal": {
+          "volumeEach": {
             "type": "number",
             "example": 330,
             "nullable": true,
             "description": "Volume of the drink, in ml"
+          },
+          "packSize": {
+            "type": "number",
+            "example": 6,
+            "nullable": true,
+            "description": "Number of drinks in the pack"
           }
         }
       },
@@ -2801,11 +2816,17 @@
             "nullable": true,
             "description": "Alcohol content in the drink, percentage"
           },
-          "volumeTotal": {
+          "volumeEach": {
             "type": "number",
             "example": 330,
             "nullable": true,
             "description": "Volume of the drink, in ml"
+          },
+          "packSize": {
+            "type": "number",
+            "example": 6,
+            "nullable": true,
+            "description": "Number of drinks in the pack"
           },
           "barcode": {
             "type": "string",
@@ -2842,8 +2863,11 @@
           "alcoholContent": {
             "$ref": "#/components/schemas/Item/properties/alcoholContent"
           },
-          "volumeTotal": {
-            "$ref": "#/components/schemas/Item/properties/volumeTotal"
+          "volumeEach": {
+            "$ref": "#/components/schemas/Item/properties/volumeEach"
+          },
+          "packSize": {
+            "$ref": "#/components/schemas/Item/properties/packSize"
           },
           "slug": {
             "type": "string",

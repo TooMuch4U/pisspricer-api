@@ -138,10 +138,12 @@ paths:
                   type: number
                 alcoholContent:
                   type: number
-                volumeTotal:
+                volumeEach:
                   type: integer
                 barcode:
                   type: string
+                packSize:
+                  type: integer
       
       responses:
         '201':
@@ -265,7 +267,9 @@ paths:
                   type: number
                 alcoholContent:
                   type: number
-                totalVolume:
+                volumeEach:
+                  type: integer
+                packSize:
                   type: integer
       responses:
         '200':
@@ -412,10 +416,12 @@ paths:
                     $ref: '#/components/schemas/Item/properties/stdDrinks'
                   alcoholContent:
                     $ref: '#/components/schemas/Item/properties/alcoholContent'
-                  volumeTotal:
-                    $ref: '#/components/schemas/Item/properties/volumeTotal'
+                  volumeEach:
+                    $ref: '#/components/schemas/Item/properties/volumeEach'
                   slug:
                     $ref: '#/components/schemas/ItemFull/properties/slug'
+                  packSize:
+                    $ref: '#/components/schemas/ItemFull/properties/packSize'
                     
       responses:
         '200':
@@ -1782,11 +1788,16 @@ components:
             example: 5.4
             nullable: true
             description: Alcohol content in the drink, percentage
-          volumeTotal:
+          volumeEach:
             type: number
             example: 330
             nullable: true
             description: Volume of the drink, in ml
+          packSize:
+            type: number
+            example: 6
+            nullable: true
+            description: Number of drinks in the pack
       ItemCreate:
         title: Item Create Body
         type: object
@@ -1816,11 +1827,16 @@ components:
             example: 5.4
             nullable: true
             description: Alcohol content in the drink, percentage
-          volumeTotal:
+          volumeEach:
             type: number
             example: 330
             nullable: true
             description: Volume of the drink, in ml
+          packSize:
+            type: number
+            example: 6
+            nullable: true
+            description: Number of drinks in the pack
           barcode:
             type: string
             example: 945647890812
@@ -1844,8 +1860,10 @@ components:
             $ref: '#/components/schemas/Item/properties/stdDrinks'
           alcoholContent:
             $ref: '#/components/schemas/Item/properties/alcoholContent'
-          volumeTotal:
-            $ref: '#/components/schemas/Item/properties/volumeTotal'
+          volumeEach:
+            $ref: '#/components/schemas/Item/properties/volumeEach'
+          packSize:
+            $ref: '#/components/schemas/Item/properties/packSize'
           slug:
             type: string
             minLength: 1
