@@ -1805,6 +1805,9 @@
                       "postcode": {
                         "type": "integer"
                       },
+                      "internalId": {
+                        "type": "string"
+                      },
                       "regionName": {
                         "type": "number"
                       },
@@ -1841,6 +1844,9 @@
                   },
                   "brandId": {
                     "type": "integer"
+                  },
+                  "internalId": {
+                    "type": "string"
                   },
                   "location": {
                     "type": "object",
@@ -1942,6 +1948,9 @@
                     "brandUrl": {
                       "type": "string"
                     },
+                    "internalId": {
+                      "type": "string"
+                    },
                     "location": {
                       "type": "object",
                       "properties": {
@@ -2025,6 +2034,9 @@
                   },
                   "regionId": {
                     "type": "integer"
+                  },
+                  "internalId": {
+                    "type": "string"
                   }
                 }
               }

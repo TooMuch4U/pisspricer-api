@@ -1171,7 +1171,8 @@ paths:
                       type: string
                     postcode:
                       type: integer
-                    
+                    internalId:
+                      type: string
                     regionName:
                       type: number
                     regLat:
@@ -1194,6 +1195,8 @@ paths:
                   type: string
                 brandId:
                   type: integer
+                internalId:
+                      type: string
                 location:
                   type: object
                   properties:
@@ -1259,6 +1262,8 @@ paths:
                     type: integer
                   brandUrl:
                     type: string
+                  internalId:
+                      type: string
                   location:
                     type: object
                     properties:
@@ -1311,6 +1316,8 @@ paths:
                   type: integer
                 regionId:
                   type: integer
+                internalId:
+                      type: string
       responses:
         '200':
           description: OK
