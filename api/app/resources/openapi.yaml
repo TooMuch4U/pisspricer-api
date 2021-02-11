@@ -1138,6 +1138,12 @@ paths:
   /stores:
     get:
       summary: "Get all stores"
+      parameters:
+        - in: query
+          name: brandId
+          schema:
+            type: integer
+          description: Filters with the specified brand id
       tags:
         - Store
       security: []
