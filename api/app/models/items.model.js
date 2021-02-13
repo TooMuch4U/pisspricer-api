@@ -35,6 +35,7 @@ function buildSelectSql (query) {
                       C.name as category,
                       SC.name as subcategory,
                       I.*,
+                      (MIN(IF(P.price > P.sale_price, P.sale_price, P.price)) / I.std_drinks) as dollarsPerStd,
                       count(*) as store_count\n`;
 
     // --- FROM ---
