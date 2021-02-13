@@ -156,6 +156,9 @@
                           },
                           "bestPrice": {
                             "type": "number"
+                          },
+                          "dollarsPerStd": {
+                            "type": "number"
                           }
                         }
                       }

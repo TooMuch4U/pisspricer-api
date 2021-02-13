@@ -108,6 +108,8 @@ paths:
                           type: integer
                         bestPrice:
                           type: number
+                        dollarsPerStd:
+                          type: number
         '400':
           description: Bad Request
         '500':
