@@ -105,6 +105,12 @@ function buildSelectSql (query) {
         case 'alpha-desc':
             order += `I.name DESC`;
             break;
+        case 'std-desc':
+            order += `dollarsPerStd DESC`;
+            break;
+        case 'std-asc':
+            order += `ISNULL(dollarsPerStd), dollarsPerStd ASC`;
+            break;
         case 'best-match':
         default:
             order += `CASE WHEN I.name LIKE ? THEN 3

@@ -7,7 +7,7 @@ paths:
   /items:
     get:
       summary: "Get all items"
-      description: "Permission required to see: barcodeCount, internalSku. Orders: price-asc, price-desc, best-match, alpha-asc, alpha-desc"
+      description: "Permission required to see: barcodeCount, internalSku. Orders: price-asc, price-desc, best-match, alpha-asc, alpha-desc, std-asc, std-desc"
       tags:
         - Items
       security: []
