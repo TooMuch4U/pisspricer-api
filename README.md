@@ -4,10 +4,6 @@
 A Node.js Express web api used for Pisspricer. 
 The api is currently deployed at [api.pisspricer.co.nz](https://api.pisspricer.co.nz).
 
-# Pisspricer Web API
-A Node.js Express web api used for Pisspricer. 
-The api is currently deployed at [api.pisspricer.co.nz](https://api.pisspricer.co.nz).
-
 # Requirements
 - Node.js
 - npm
