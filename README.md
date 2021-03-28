@@ -47,3 +47,7 @@ Start the api server with
 npm start
 ```
 
+# Testing
+A testing environment can be set up as described in the corresponding README files in 
+`/testing-env`.
+
