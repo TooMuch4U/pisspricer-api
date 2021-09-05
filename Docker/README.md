@@ -14,3 +14,10 @@ Set so the user can be logged in with password:
 
 `FLUSH privileges;`
 
+
+
+## Environment
+
+A `.env` needs to be created in the Docker directroy.
+
+A gcloud json key needs to be provided in the ./keys and specified in the .env file.
