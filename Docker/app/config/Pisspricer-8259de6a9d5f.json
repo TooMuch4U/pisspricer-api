@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pisspricer",
+  "private_key_id": "8259de6a9d5fd1190d68b175768288580716e9be",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCjWiYt2oVSsR9T\nY2k//GZyzzKWOd86M/1eI3IQuYWkfn9HPLDXY4IttuV7HrU5IlDdFIpAfG29WSlE\nXEW1vhBxRwLEBACKIdeXSFmiUtW7+qjiid4RrzEgFi1sRSl6J9ohIm2GI2xFYwws\ny0pgzF4JD5tc3gjrljO5hB8q8KgwusqiCVR/BQtqsYRr/lHv+6rEbRl/85OfhzyM\ng+7rOEKGaV6rRHY8rd6G1vQN1E7zv28rGVTefGJIgEnhUweOH0yRB8VpE3EKI4/z\nzv1EXFG5/uLvL+jFjKDRvjeme++JWxJsAgKPfXcrXMQ1N7/gPnG4rHUSHCe0AKfK\nOyQ+sRohAgMBAAECggEABgatAo4IKGfJAbjYyM0qiQZkawRRhtfPe1SQFavdEUIV\nYe8MOws8YdatxTVPIX9xlOZNagRCbB9zlUZYz/6QpA0m6KJD1CoGxlmbQjtkunLh\nyLxQnpMO8Ixrj+NGnMSxmFKpJa9S2YXGN4onAUZ+Gul3esfkyQQZKQ6Fs9N9m5Ez\n/L/fwggHrfft2Izyyf0VxhUZByuTmz64L/dCRZoGZODUANH7wAMgUz9hogUoxCRK\nx+RNZCukeCEgJq78v5l/w4yDwpcIYM2TCsGsosjVs68PEN/L7PtDWKYhtf/5Aep2\nYl6X0Q2KqGt70mnhlDxd6EpPxddbTidsWHwk7vNbjQKBgQDjcx7hCNENepGGQdxE\nXv+C8wZt2mCfSQOE9KmasA9lSTmQC1jzm1NMLKnblpv4Vwkvfy5W2RlNqCetMkcv\nSjvP6w+tW6CFOaBnH7oz2fA+U2W1KXkOI+LuH5xuO/BqwI3x56ZYgyYgAW7NDP+T\nob4e6kAHeNtkEa0sJikJOGyCAwKBgQC321CdHudlP7AN7SDjN9deA7YJ9sLEvi3L\n/fycfwmFpS4FBHGS3eYqePwwNmdf+A0VnWcP5rYiYWvjnPXPTvsGpkrmfHnXrZMY\nIkGJF/Tvu4KLoXroYpHEoqg5tpsDQsTWBof52qRi691Z0c/E0LOy6utYTJOxlEWY\nGVeF9eUsCwKBgFd5rfWUQ3pwmklNSR6OfqxpNR7IrwJzvUPEKPqSHcmxiM7qXlKK\neVXBk64dVW0EZEb9HeBO7JleQ6wruw7n+Or1F3lv1OOIDzW6EQ3iErCVuHcdNS6I\nBL3aMHqA2Ozlk3HmyqYeAmqqwmdgSWcI/Kq9ItT82Tu6RKTHJF8kcS7rAoGASuMT\n1MuvqLfmN+XsTWCDYpHUZf6Smpxz/vD3Ia9E66C6O+TxdcbYZ1hcMC8YsChS/Aje\n38UzTpGr5kwae1RKPw0g2Py+jDDxBxV86CBP7g3MQJ+Hdnwfr54pM0jDnvJlRl/m\npsh9yKUVxe4F2L7BUxEIxzB5wA0Kw8cetTvRGr0CgYA+XLGCYvfjXPqn+gSbs5TA\nFJTZfaRwypVeqlwXvSPsvn6YyunFuLcQjj2n3+0fxQfEzr3avuc0IyBVsvVs4vvI\nf/C6l0G0sKXrJxAjypvsVbyXEVrPHQjoKqwVM704AoRVgrNpZ2jXPV4gU22/lv/c\n7C9fPlu/iAbf95qB5wnTCQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "pisspricer-api@pisspricer.iam.gserviceaccount.com",
+  "client_id": "114931270494273334050",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pisspricer-api%40pisspricer.iam.gserviceaccount.com"
+}

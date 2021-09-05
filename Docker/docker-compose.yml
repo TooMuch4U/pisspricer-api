@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    command: --lower_case_table_names=1
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./populate-data:/populate-data
+  nodejs:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - 4941:4941
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=pisspricer
+      - MYSQL_PORT=3306
+      - OPEN_PORT=4941
+      - IMAGE_BUCKET
+      - BUCKET_KEY_PATH
+      - EMAIL_HOST
+      - EMAIL_USER
+      - EMAIL_PASSWORD
+      - EMAIL_ADDRESS
