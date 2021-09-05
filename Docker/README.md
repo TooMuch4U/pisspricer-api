@@ -6,13 +6,9 @@ Move the dump.sql into the ./populate-data directory.
 
 Start the docker container: `sudo docker-compose up -d`
 
+Connect to the containers shell: `sudo docker exec -it api_db_1 bash`
+
 Populate the data (takes 20 seconds): `mysql -p < populate-data/dump.sql`
-
-Set so the user can be logged in with password:
-
-`ALTER USER 'root' IDENTIFIED BY 'password';`
-
-`FLUSH privileges;`
 
 
 
