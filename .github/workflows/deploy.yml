@@ -15,6 +15,7 @@ jobs:
           version: '290.0.1'
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
+      - uses: actions/checkout@v2
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
