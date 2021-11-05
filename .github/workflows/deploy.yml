@@ -10,25 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: git pull (via ssh)
-        uses: fifsky/ssh-action@master
+      - uses: google-github-actions/setup-gcloud@master
         with:
-          command: |
-            cd /home/tom/Documents/pisspricer-api/api
-            git checkout master
-            git pull
-            npm install
-          host: ${{ secrets.SSH_HOST }}
-          user: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.PRIVATE_KEY}}
-          port: ${{ secrets.SSH_PORT }}
-      - name: restart api (via ssh)
-        uses: fifsky/ssh-action@master
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - id: Deploy
+        uses: google-github-actions/deploy-appengine@main
         with:
-          command: |
-            systemctl restart pisspricer-api
-          host: ${{ secrets.SSH_HOST }}
-          user: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.PRIVATE_KEY}}
-          port: ${{ secrets.SSH_PORT }}
+          project_id: ${{ secrets.project_id }}
+          working_directory: ./api
+
 
