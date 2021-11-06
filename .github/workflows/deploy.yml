@@ -23,9 +23,9 @@ jobs:
           MYSQL_PASSWORD: ${{ MYSQL_PASSWORD }}
           MYSQL_DATABASE: ${{ MYSQL_DATABASE }}
           MYSQL_PORT: ${{ MYSQL_PORT }}
-          IMAGE_BUCKET: ${{ IMAGE_BUCKET }}
-          BUCKET_KEY_PATH: ${{ BUCKET_KEY_PATH }}
-          OPEN_PORT: ${{ OPEN_PORT }}
+#           IMAGE_BUCKET: ${{ IMAGE_BUCKET }}
+#           BUCKET_KEY_PATH: ${{ BUCKET_KEY_PATH }}
+#           OPEN_PORT: ${{ OPEN_PORT }}
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
