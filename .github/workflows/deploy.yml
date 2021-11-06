@@ -17,21 +17,33 @@ jobs:
           version: '290.0.1'
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
-      - uses: actions/checkout@v2
-        with:
-          dir: ./api
-      - uses: dovidio/app-yaml-env-compiler@master
-        with:
-          appyamlpath: ./api
+#       - uses: actions/checkout@v2
+#         with:
+#           dir: ./api
+
+      - id: generate_dotenv_file
         env:
-          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-#           IMAGE_BUCKET: ${{ secrets.IMAGE_BUCKET }}
-#           BUCKET_KEY_PATH: ${{ secrets.BUCKET_KEY_PATH }}
-          OPEN_PORT: ${{ secrets.OPEN_PORT }}
+          MY_DOTENV: ${{ secrets.MY_DOTENV }}
+        run: echo "$MY_DOTENV" > .env-for-app-yaml
+
+      - id: prepare-app-yaml
+        uses: mshick/fast-envsubst@v1
+        with:
+          env-file: .env-for-app-yaml
+          in-file: app.yaml.template
+          out-file: app.yaml
+#       - uses: dovidio/app-yaml-env-compiler@master
+#         with:
+#           appyamlpath: ./api
+#         env:
+#           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+#           MYSQL_USER: ${{ secrets.MYSQL_USER }}
+#           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+#           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+#           MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+# #           IMAGE_BUCKET: ${{ secrets.IMAGE_BUCKET }}
+# #           BUCKET_KEY_PATH: ${{ secrets.BUCKET_KEY_PATH }}
+#           OPEN_PORT: ${{ secrets.OPEN_PORT }}
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
