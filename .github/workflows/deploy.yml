@@ -16,6 +16,16 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
       - uses: actions/checkout@v2
+      - uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
+        env:
+          MYSQL_HOST: ${{ MYSQL_HOST }}
+          MYSQL_USER: ${{ MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ MYSQL_DATABASE }}
+          MYSQL_PORT: ${{ MYSQL_PORT }}
+          IMAGE_BUCKET: ${{ IMAGE_BUCKET }}
+          BUCKET_KEY_PATH: ${{ BUCKET_KEY_PATH }}
+          OPEN_PORT: ${{ OPEN_PORT }}
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
