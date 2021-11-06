@@ -21,8 +21,8 @@ jobs:
         with:
           dir: ./api
       - uses: dovidio/app-yaml-env-compiler@master
-        with:
-          appyamlpath: './api'
+#         with:
+#           appyamlpath: './api'
         env:
           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
           MYSQL_USER: ${{ secrets.MYSQL_USER }}
