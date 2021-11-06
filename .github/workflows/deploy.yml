@@ -31,5 +31,6 @@ jobs:
         with:
           project_id: ${{ secrets.project_id }}
           working_directory: api
+          deliverables: ../app.yaml
 
 
