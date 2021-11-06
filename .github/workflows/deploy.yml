@@ -18,14 +18,14 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
         env:
-          MYSQL_HOST: ${{ MYSQL_HOST }}
-          MYSQL_USER: ${{ MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ MYSQL_PASSWORD }}
-          MYSQL_DATABASE: ${{ MYSQL_DATABASE }}
-          MYSQL_PORT: ${{ MYSQL_PORT }}
-#           IMAGE_BUCKET: ${{ IMAGE_BUCKET }}
-#           BUCKET_KEY_PATH: ${{ BUCKET_KEY_PATH }}
-#           OPEN_PORT: ${{ OPEN_PORT }}
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+#           IMAGE_BUCKET: ${{ secrets.IMAGE_BUCKET }}
+#           BUCKET_KEY_PATH: ${{ secrets.BUCKET_KEY_PATH }}
+          OPEN_PORT: ${{ secrets.OPEN_PORT }}
       - id: Deploy
         uses: google-github-actions/deploy-appengine@main
         with:
