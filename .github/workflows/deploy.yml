@@ -18,6 +18,8 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
       - uses: actions/checkout@v2
+        with:
+          dir: ./api
       - uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
         env:
           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
@@ -32,7 +34,7 @@ jobs:
         uses: google-github-actions/deploy-appengine@main
         with:
           project_id: ${{ secrets.project_id }}
-          working_directory: ./api
-          deliverables: ../app.yaml
+#           working_directory: ./api
+#           deliverables: ../app.yaml
 
 
