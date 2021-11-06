@@ -20,7 +20,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           dir: ./api
-      - uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
+      - uses: dovidio/app-yaml-env-compiler@master
+        with:
+          appyamlpath: './api'
         env:
           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
           MYSQL_USER: ${{ secrets.MYSQL_USER }}
@@ -34,7 +36,6 @@ jobs:
         uses: google-github-actions/deploy-appengine@main
         with:
           project_id: ${{ secrets.project_id }}
-#           working_directory: ./api
-#           deliverables: ../app.yaml
+          working_directory: ./api
 
 
