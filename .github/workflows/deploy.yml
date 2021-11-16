@@ -24,14 +24,14 @@ jobs:
       - id: generate_dotenv_file
         env:
           MY_DOTENV: ${{ secrets.MY_DOTENV }}
-        run: echo "$MY_DOTENV" > .env-for-app-yaml
+        run: echo "$MY_DOTENV" > .env
 
-      - id: prepare-app-yaml
-        uses: mshick/fast-envsubst@v1
-        with:
-          env-file: .env-for-app-yaml
-          in-file: app.yaml.template
-          out-file: app.yaml
+#       - id: prepare-app-yaml
+#         uses: mshick/fast-envsubst@v1
+#         with:
+#           env-file: .env-for-app-yaml
+#           in-file: app.yaml.template
+#           out-file: app.yaml
 #       - uses: dovidio/app-yaml-env-compiler@master
 #         with:
 #           appyamlpath: ./api
