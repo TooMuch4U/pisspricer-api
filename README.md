@@ -35,6 +35,7 @@ The api is currently deployed at [api.pisspricer.co.nz](https://api.pisspricer.c
     EMAIL_USER=
     EMAIL_PASSWORD=
     EMAIL_ADDRESS=
+    CLOUD_SQL_CONNECTION_NAME= //see https://cloud.google.com/sql/docs/mysql/connect-app-engine-standard
 	```
 ### HTTPS
 To enable https aswell as http...
